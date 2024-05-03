@@ -1,6 +1,0 @@
-[submodule "lib/json"]
-	path = lib/json
-	url = https://github.com/nlohmann/json.git
-[submodule "lib/curlcpp"]
-	path = lib/curlcpp
-	url = https://github.com/JosephP91/curlcpp
