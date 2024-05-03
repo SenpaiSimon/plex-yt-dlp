@@ -1,23 +1,5 @@
 #!/bin/sh
 
-#############################################################
-## usage
-#############################################################
-#
-# ytdl.sh [url] [mediaType] [playlistStartIndex] [forceID]
-# 
-# [url] = url to playlist or single video
-#
-# [mediaType] = music, playlist, single
-#     single -> Single Video
-#     plalist -> whole playlist
-#     music -> only download sound
-#
-# [playlistStartIndex] = force a start index, dont make it auto
-#
-# [forceID] = overwrites the auto-id 
-#
-#############################################################
 
 #############################################################
 ## Help Screen Print
@@ -47,7 +29,7 @@ if [[ "$1" == "-h" || "$1" == "--help" || -z "$1" ]]; then
   echo -e "# ${THICK}[mediaType]${NOCOLOR} = music, playlist, single"
   echo "#    single  -> Single Video"
   echo "#    plalist -> whole playlist"
-  echo "#    music   -> only download sound"
+  echo "#    music   -> only download sound - works with playlist or single file"
   echo "#"
   echo -e "# ${BLUE}[playlistStartIndex]${NOCOLOR} = force a starting index"
   echo "#"
