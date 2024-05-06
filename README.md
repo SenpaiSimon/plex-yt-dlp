@@ -13,6 +13,7 @@ Easy to use Bash-Script based wrapper for using [yt-dlp](https://github.com/yt-d
 * Embeds thumbnail as music cover
 * Downloads metadata as info.json for plex
 * Downloads and embeds english and german subtitles if available
+* This can also download RSS-Feeds -- use "music" option for that
 
 # Requirements
 
