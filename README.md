@@ -41,6 +41,16 @@ sudo apt install ffmpeg
 sudo apt install python3-mutagen
 ```
 
+# Exeutable
+
+Also make sure both scripts are executable. Just run following commands:
+```bash
+chmod +x ytdl.sh
+chmod +x supermove.sh
+```
+
+# Usage
+
 ## Creating a YouTube Api-Key
 
 Feel free to refer to this guide

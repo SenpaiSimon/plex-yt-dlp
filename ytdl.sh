@@ -12,27 +12,27 @@ NOCOLOR='\033[0m'
 #############################################################
 ## Help Screen Print
 #############################################################
-if [[ "$1" == "-h" || "$1" == "--help" || -z "$1" ]]; then
+if [ "$1" = "-h"  -o  "$1" = "--help"  -o  -z "$1" ]; then
   echo "##################################################"
   echo "#"
-  echo -e "# ${THICK}ytdl.sh USAGE ${NOCOLOR}"
+  echo "# ${THICK}ytdl.sh USAGE ${NOCOLOR}"
   echo "#"
   echo "##################################################"
   echo "#"
-  echo -e "# ${THICK}ytdl.sh [url] [mediaType] ${BLUE}[playlistStartIndex] [forceID]${NOCOLOR}"
+  echo "# ${THICK}ytdl.sh [url] [mediaType] ${BLUE}[playlistStartIndex] [forceID]${NOCOLOR}"
   echo "#"
-  echo -e "# ${THICK}green args${NOCOLOR} are mandatory - ${BLUE}blue args${NOCOLOR} are optional ${NOCOLOR}"
+  echo "# ${THICK}green args${NOCOLOR} are mandatory - ${BLUE}blue args${NOCOLOR} are optional ${NOCOLOR}"
   echo "#"
-  echo -e "# ${THICK}[url]${NOCOLOR} = url to playlist or single video"
+  echo "# ${THICK}[url]${NOCOLOR} = url to playlist or single video"
   echo "#"
-  echo -e "# ${THICK}[mediaType]${NOCOLOR} = music, playlist, single"
+  echo "# ${THICK}[mediaType]${NOCOLOR} = music, playlist, single"
   echo "#    single  -> Single Video"
   echo "#    plalist -> whole playlist"
   echo "#    music   -> only download sound - works with playlist or single file"
   echo "#"
-  echo -e "# ${BLUE}[playlistStartIndex]${NOCOLOR} = force a starting index"
+  echo "# ${BLUE}[playlistStartIndex]${NOCOLOR} = force a starting index"
   echo "#"
-  echo -e "# ${BLUE}[forceID]${NOCOLOR} = overwrites the auto-id "
+  echo "# ${BLUE}[forceID]${NOCOLOR} = overwrites the auto-id "
   echo "#"
   echo "##################################################"
   exit 0
@@ -51,7 +51,7 @@ if [ ! -f "$confFile" ]; then
   echo "# Put Music Path in the next line" >> "$confFile" 
   echo "" >> "$confFile"
   echo "# Put YouTube API Key in the next line" >> "$confFile"
-  echo -e "${THICK}Created Config-File${NOCOLOR}"
+  echo "${THICK}Created Config-File${NOCOLOR}"
   echo "Please Fill in paths like this: /this/is/a/path"
   echo "                       or this: ./path/to/folder"
   echo ""
@@ -64,10 +64,10 @@ fi
 #############################################################
 ## Check if yt-dlp is even there
 #############################################################
-if ! command -v yt-dlp &> /dev/null; then
-  echo -e "${RED}Did not find yt-dlp exectuable on path${NOCOLOR}" >&2
-  echo -e "${RED}Please install it from here and add it to your path${NOCOLOR}" >&2
-  echo "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp" >&2
+if [ ! $(command -v yt-dlp) ]; then
+  echo "${RED}Did not find yt-dlp exectuable on path${NOCOLOR}" >&2
+  echo "${RED}Please install it from here and add it to your path${NOCOLOR}" >&2
+  echo "      https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp" >&2
   exit 1
 fi
 
@@ -76,8 +76,8 @@ fi
 ## Check if supermove is there
 #############################################################
 if [ ! -f "supermove.sh" ]; then
-  echo -e "${RED}Did not find supermove.sh in this dir${NOCOLOR}" >&2
-  echo -e "${RED}Please also get it from the repo${NOCOLOR}" >&2
+  echo "${RED}Did not find supermove.sh in this dir${NOCOLOR}" >&2
+  echo "${RED}Please also get it from the repo${NOCOLOR}" >&2
   exit 1
 fi
 
@@ -97,7 +97,7 @@ api_key=$(head -n 6 "$confFile" | tail -n 1)
 #############################################################
 if [ -z "$2" ]
   then
-    echo -e "${RED}ERR No type given on argument 2${NOCOLOR}" >&2
+    echo "${RED}ERR No type given on argument 2${NOCOLOR}" >&2
     exit 1
 fi
 
@@ -121,11 +121,11 @@ mkdir -p ${musicOutFolder}
 ## Validate Paths
 #############################################################
 if [ ! -d "${videoOutFolder}" ]; then
-  echo -e "${RED}ERR Video Out Path is invalid${NOCOLOR}" >&2
+  echo "${RED}ERR Video Out Path is invalid${NOCOLOR}" >&2
   exit 1
 fi
 if [ ! -d "${musicOutFolder}" ]; then
-  echo -e "${RED}ERR Video Out Path is invalid${NOCOLOR}" >&2
+  echo "${RED}ERR Video Out Path is invalid${NOCOLOR}" >&2
   exit 1
 fi
 
@@ -133,7 +133,7 @@ fi
 #############################################################
 ## Generate Unique ID
 #############################################################
-if [[ "$2" == "playlist" || "$2" == "music" ]]; then
+if [ "$2" = "playlist" -o "$2" = "music" ]; then
   # Get video ID from playlist URL
   playlist_id=$(echo "$dlUrl" | grep -oP 'PL[\w-]*')
   # Use curl to get channel information based on playlist ID
@@ -144,7 +144,7 @@ if [[ "$2" == "playlist" || "$2" == "music" ]]; then
   plTitle="${plTitle} [youtube-${playlist_id}]"
 
   # check if this playlist has already been downloaded at some point
-  if [[ -d "${videoOutFolder}/${channelName}/${plTitle}" ]]; then
+  if [ -d "${videoOutFolder}/${channelName}/${plTitle}" ]; then
     # get id as the season num
     uniqueID=$(ls -l "${videoOutFolder}/${channelName}/${plTitle}" | grep -oP -m 1 'S([0-9]+)' | head -n 1 | sed 's/^S//')
     # get the highest episode
@@ -181,18 +181,18 @@ yt-dlp -U
 #############################################################
 ## differentiate media types
 #############################################################
-if [[ "${mediaType}" == "playlist" ]]; then
+if [ "${mediaType}" = "playlist" ]; then
   outFolder=${videoOutFolder}
   outFile="${tempFolder}/%(uploader)s/%(playlist_title)s [youtube-%(playlist_id)s]/%(title)s - S${uniqueID}E%(playlist_index)s [%(id)s].%(ext)s"
-elif [[ "${mediaType}" == "single" ]]; then
+elif [ "${mediaType}" = "single" ]; then
   read -p "Enter Folder Name: " folderName
   outFolder=${videoOutFolder}
   outFile="${tempFolder}/%(uploader)s/${folderName}/%(title)s [%(id)s].%(ext)s"
-elif [[ "${mediaType}" == "music" ]]; then
+elif [ "${mediaType}" = "music" ]; then
   outFolder=${musicOutFolder}
   outFile="${tempFolder}/%(uploader)s/%(playlist_title)s/%(title)s - E%(playlist_index)s.%(ext)s"
 else
-  echo -e "${RED}ERR Unknown Type${NOCOLOR}" >&2
+  echo "${RED}ERR Unknown Type${NOCOLOR}" >&2
   exit 1
 fi
 
@@ -200,7 +200,7 @@ fi
 #############################################################
 ## post script hook call system dependent
 #############################################################
-if [[ "$OSTYPE" == "msys" ]]; then
+if [ "$OSTYPE" = "msys" ]; then
   postHook="bash supermove.sh ${tempFolder}/ ${outFolder}/"  
 else
   postHook="./supermove.sh ${tempFolder}/ ${outFolder}/"
@@ -210,7 +210,7 @@ fi
 #############################################################
 ## actual command call
 #############################################################
-if [[ "${mediaType}" == "music" ]]; then
+if [ "${mediaType}" = "music" ]; then
   yt-dlp ${dlUrl} \
     --embed-thumbnail --embed-metadata --embed-chapters \
     -f 'bestaudio[ext=m4a]/bestaudio[ext=aac]/bestaudio[ext=mp3]' \
