@@ -215,7 +215,7 @@ if [ "${mediaType}" = "music" ]; then
   yt-dlp ${dlUrl} \
     --embed-thumbnail --embed-metadata \
     --parse-metadata "playlist_autonumber:%(track_number)s" \
-    --add-metadata --embed-chapters \
+    --add-metadata --embed-chapters --restrict-filenames \
     -f 'bestaudio[ext=m4a]/bestaudio[ext=aac]/bestaudio[ext=mp3]' \
     -o "${outFile}" \
     -I ${startIndex}::1 \
@@ -224,7 +224,7 @@ elif [ "${mediaType}" = "rss" ]; then
   yt-dlp ${dlUrl} \
     --embed-thumbnail --embed-metadata \
     --parse-metadata "playlist_autonumber:%(track_number)s" \
-    --add-metadata --embed-chapters --playlist-reverse \
+    --add-metadata --embed-chapters --playlist-reverse --restrict-filenames \
     -f 'bestaudio[ext=m4a]/bestaudio[ext=aac]/bestaudio[ext=mp3]' \
     -o "${outFile}" \
     -I ${startIndex}::1 \
@@ -232,7 +232,8 @@ elif [ "${mediaType}" = "rss" ]; then
 else
   yt-dlp ${dlUrl} \
     --sub-format best --sub-langs de.*,ger.*,en.* \
-    --embed-subs --embed-thumbnail --embed-metadata --embed-chapters --write-info-json \
+    --embed-subs --embed-thumbnail --embed-metadata --embed-chapters \
+    --write-info-json --restrict-filenames \
     -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4' \
     -o "${outFile}" \
     -I ${startIndex}::1 \
