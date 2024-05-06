@@ -13,7 +13,7 @@ Easy to use Bash-Script based wrapper for using [yt-dlp](https://github.com/yt-d
 * Embeds thumbnail as music cover
 * Downloads metadata as info.json for plex
 * Downloads and embeds english and german subtitles if available
-* This can also download RSS-Feeds -- use "music" option for that
+* This can also download RSS-Feeds -- use "rss" option for that
 
 # Requirements
 
@@ -77,7 +77,7 @@ WDdhjoaiwdhoiWADWAdoihDAWdoih
 
 # Usage
 
-Just use `ytdl.sh -h` for the help screen.
+Just use `ytdl.sh -h` or `ytdl.sh --help` for the help screen.
 
 This will print something like:
 
@@ -91,6 +91,7 @@ ytdl.sh [url] [mediaType] [playlistStartIndex] [forceID]
     single  -> Single Video
     plalist -> whole playlist
     music   -> only download sound - works with playlist or single file
+    rss     -> Download whole RSS Feed
 
 [playlistStartIndex] = force a starting index
 
@@ -109,9 +110,15 @@ ytdl.sh urlToPlaylistHere playlist
 # Download a music playlist
 ytdl.sh urlToPlaylistHere music
 
+# Download a rss feed
+ytdl.sh urlToPlaylistHere rss
+
 # Download a playlist starting from video 10
 ytdl.sh urlToPlaylistHere playlist 10
 
 # Download a music playlist starting from video 10
 ytdl.sh urlToPlaylistHere music 10
+
+# Download a rss feed starting from video 10
+ytdl.sh urlToPlaylistHere rss 10
 ```

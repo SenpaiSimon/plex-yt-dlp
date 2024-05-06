@@ -29,6 +29,7 @@ if [ "$1" = "-h"  -o  "$1" = "--help"  -o  -z "$1" ]; then
   echo "#    single  -> Single Video"
   echo "#    plalist -> whole playlist"
   echo "#    music   -> only download sound - works with playlist or single file"
+  echo "#    rss     -> Download whole RSS Feed"
   echo "#"
   echo "# ${BLUE}[playlistStartIndex]${NOCOLOR} = force a starting index"
   echo "#"
@@ -133,7 +134,7 @@ fi
 #############################################################
 ## Generate Unique ID
 #############################################################
-if [ "$2" = "playlist" -o "$2" = "music" ]; then
+if [ "$2" = "playlist" ]; then
   # Get video ID from playlist URL
   playlist_id=$(echo "$dlUrl" | grep -oP 'PL[\w-]*')
   # Use curl to get channel information based on playlist ID
@@ -188,9 +189,9 @@ elif [ "${mediaType}" = "single" ]; then
   read -p "Enter Folder Name: " folderName
   outFolder=${videoOutFolder}
   outFile="${tempFolder}/%(uploader)s/${folderName}/%(title)s [%(id)s].%(ext)s"
-elif [ "${mediaType}" = "music" ]; then
+elif [ "${mediaType}" = "music" -o "${mediaType}" = "rss" ]; then
   outFolder=${musicOutFolder}
-  outFile="${tempFolder}/%(uploader)s/%(playlist_title)s/%(title)s - E%(playlist_index)s.%(ext)s"
+  outFile="${tempFolder}/%(uploader)s/%(playlist_title)s/%(title)s.%(ext)s"
 else
   echo "${RED}ERR Unknown Type${NOCOLOR}" >&2
   exit 1
@@ -212,7 +213,18 @@ fi
 #############################################################
 if [ "${mediaType}" = "music" ]; then
   yt-dlp ${dlUrl} \
-    --embed-thumbnail --embed-metadata --embed-chapters \
+    --embed-thumbnail --embed-metadata \
+    --parse-metadata "playlist_autonumber:%(track_number)s" \
+    --add-metadata --embed-chapters \
+    -f 'bestaudio[ext=m4a]/bestaudio[ext=aac]/bestaudio[ext=mp3]' \
+    -o "${outFile}" \
+    -I ${startIndex}::1 \
+    --exec "${postHook}"
+elif [ "${mediaType}" = "rss" ]; then
+  yt-dlp ${dlUrl} \
+    --embed-thumbnail --embed-metadata \
+    --parse-metadata "playlist_autonumber:%(track_number)s" \
+    --add-metadata --embed-chapters --playlist-reverse \
     -f 'bestaudio[ext=m4a]/bestaudio[ext=aac]/bestaudio[ext=mp3]' \
     -o "${outFile}" \
     -I ${startIndex}::1 \
