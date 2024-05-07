@@ -70,11 +70,12 @@ void argumentParser::checkArguments() {
     }
 
     // check if mediaType is valid
-    if(this->setting.mediaType != "music" && \
-       this->setting.mediaType != "musicPlaylist" && \
-       this->setting.mediaType != "video" && \
-       this->setting.mediaType != "videoPlaylist" && \
-       this->setting.mediaType != "rss") {
+    if(!(this->setting.mediaType == "music" || \
+         this->setting.mediaType == "musicPlaylist" || \
+         this->setting.mediaType == "video" || \
+         this->setting.mediaType == "videoPlaylist" || \
+         this->setting.mediaType == "rss")) 
+        {
         cout << colors::boldRed("== Error: Unknown mediaType") << endl;
         exit(1);
     }

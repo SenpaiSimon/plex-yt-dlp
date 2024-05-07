@@ -6,7 +6,9 @@ json config::parseConfig(string cwd) {
     if(!tools::fileExists(cwd + "/config.json")) {
         conf = {
             {"videoPath", "./video"},
+            {"rssPath", "./rss"},
             {"musicPath", "./music"},
+            {"tempPath", "./temp"},
             {"apiKey", "keyHere"}
         };
         std::ofstream o("config.json");

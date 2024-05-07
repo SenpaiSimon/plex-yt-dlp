@@ -13,7 +13,10 @@ using json = nlohmann::json;
 namespace fs = std::filesystem;
 using std::string;
 using std::cout;
+using std::cin;
 using std::endl;
+using std::stoi;
+using std::to_string;
 
 class downloader {
     private:
