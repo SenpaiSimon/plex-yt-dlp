@@ -1,4 +1,4 @@
-#include <colors.hpp>
+#include <misc/colors.hpp>
 
 string colors::red(string text) {
     return RED + text + RESET;

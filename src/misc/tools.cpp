@@ -1,7 +1,11 @@
-#include <tools.hpp>
+#include <misc/tools.hpp>
 
 void tools::printLine() {
-  cout << "=====================================================================================" << endl;
+    cout << "=====================================================================================" << endl;
+}
+
+bool tools::fileExists(string filePath) {
+    return fs::exists(filePath);
 }
 
 bool tools::checkIfIsExecutable(const string& name) {
@@ -34,6 +38,31 @@ string tools::executeCommand(const string& command) {
     }
     pclose(fp);
     return result;
+}
+
+string tools::getRequest(string req) {
+    // Create a stringstream object
+    ostringstream str;
+    // Create a curl_ios object, passing the stream object.
+    curl_ios<ostringstream> writer(str);
+
+    curl_easy curlTool(writer);
+
+    curlTool.add<CURLOPT_URL>(req.c_str());
+    curlTool.add<CURLOPT_FOLLOWLOCATION>(1L);
+    curlTool.add<CURLOPT_SSL_OPTIONS>(CURLSSLOPT_NATIVE_CA); // todo linux maybe nicht?
+
+    try {
+        curlTool.perform();
+    } catch (curl_easy_exception &error) {
+        // If you want to print the last error.
+        std::cerr<<error.what()<<std::endl;
+
+        // If you want to print the entire error stack you can do
+        error.print_traceback();
+    }
+
+    return str.str();
 }
 
 void tools::checkRequirements() {
@@ -80,6 +109,12 @@ void tools::checkRequirements() {
 
 void tools::printHelp() {
     cout << "help TODO" << endl;
+}
+
+smatch tools::getRegexMatches(string str, string pattern) {
+    smatch matches;
+    regex_search(str, matches, regex(pattern));
+    return matches;
 }
 
 void tools::printVersion() {

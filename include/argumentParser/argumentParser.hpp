@@ -6,7 +6,7 @@
 #include <regex>
 
 #include <argumentParser/settings.hpp>
-#include <colors.hpp>
+#include <misc/colors.hpp>
 
 using std::string;
 using std::cout;
@@ -18,11 +18,11 @@ class argumentParser
         /* data */
         int argCount;
         char** argValues;
+        settings setting;
 
     public:
-        settings setting;
         argumentParser(int argc, char** argv);
-        void parse();
+        settings parse();
         void checkArguments();
 };
 

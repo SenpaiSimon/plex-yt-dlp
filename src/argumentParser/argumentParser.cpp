@@ -5,10 +5,10 @@ argumentParser::argumentParser(int argc, char** argv) {
     this->argValues = argv;
 }
 
-void argumentParser::parse() {
+settings argumentParser::parse() {
     if(this->argCount <= 1) {
         this->setting.showHelp = true;
-        return;
+        return this->setting;
     }
 
     // parse the rest
@@ -50,6 +50,8 @@ void argumentParser::parse() {
         cout << colors::boldRed("== Error: Unknown argument: ") << this->argValues[i] << endl;
         exit(1);
     }
+
+    return this->setting;
 }
 
 void argumentParser::checkArguments() {

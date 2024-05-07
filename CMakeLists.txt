@@ -16,10 +16,12 @@ INCLUDE_DIRECTORIES(lib/json/include)
 INCLUDE_DIRECTORIES(include)
 
 add_executable(${PROJECT_NAME}
-    src/colors.cpp
-    src/tools.cpp
+    src/misc/colors.cpp
+    src/misc/tools.cpp
     src/argumentParser/settings.cpp
     src/argumentParser/argumentParser.cpp
+    src/config.cpp
+    src/idExtractor.cpp
     src/main.cpp
 )
 

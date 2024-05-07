@@ -1,15 +1,20 @@
 #include <main.hpp>
 
 int main(int argc, char** argv){
+    // info objects
+    settings setting;
+    json conf;
+
     // parase argumments
     argumentParser argParser(argc, argv);
-    argParser.parse();
+    setting = argParser.parse();
 
-    if(argParser.setting.showHelp){
+    // help and version screen
+    if(setting.showHelp){
         tools::printHelp();
         return 0;
     }
-    if(argParser.setting.showVersion){
+    if(setting.showVersion){
         tools::printVersion();
         return 0;
     }
@@ -17,7 +22,15 @@ int main(int argc, char** argv){
     // check arugment validity
     argParser.checkArguments();
 
+    // check requirements
     tools::checkRequirements();
+
+    // check config file
+    conf = config::parseConfig(setting.cwd);
+
+    // create unique ids
+    idExtractor extractor(&setting, conf);
+    extractor.extractData();
 
     return 0;
 }
