@@ -42,10 +42,19 @@ void downloader::start() {
     }
 
     // post command hook
-    #ifdef __WIN32
+    string finalFilePath = outFile;
+    // first remove the ./temp dir prefix
+    string toBeRemoved = string(conf["tempPath"]);
+    finalFilePath = finalFilePath.erase(finalFilePath.find(toBeRemoved), toBeRemoved.length());
+    // then remove the file name
+    string finalFolderPath = finalFilePath.erase(finalFilePath.find_last_of("/"), finalFilePath.length() - finalFilePath.find_last_of("/"));
+
+    #ifdef __WIN32 // TODO command for windows
+    string preHook ="";
     string postHook = "tempHook";
     #else
-    string postHook = "tempHook";
+    string preHook = "mkdir -p \"" + outputPath + finalFolderPath + "\"";
+    string postHook = "mv \"" + outFile + "\" \"" + outputPath + finalFolderPath + "\"";
     #endif
 
     // download video
@@ -55,24 +64,27 @@ void downloader::start() {
         downloadCommand += " --embed-subs --embed-thumbnail --embed-metadata --embed-chapters --write-info-json";
         downloadCommand += " -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4' -o \"";
         downloadCommand += outFile + "\" -I " + to_string(setting.indexOverwrite) + "::1";
-        downloadCommand += " --exec " + postHook;
+        downloadCommand += " --exec \'" + preHook + "\'";
+        downloadCommand += " --exec \'" + postHook + "\'";
     } else if (setting.mediaType == "music" || setting.mediaType == "musicPlaylist") {
         downloadCommand += " --embed-thumbnail --embed-metadata";
         downloadCommand += " --parse-metadata \"playlist_autonumber:%(track_number)s\"";
         downloadCommand += " --add-metadata --embed-chapters";
         downloadCommand += " -f 'bestaudio[ext=m4a]/bestaudio[ext=aac]/bestaudio[ext=mp3]' -o \"";
         downloadCommand += outFile + "\" -I " + to_string(setting.indexOverwrite) + "::1";
-        downloadCommand += " --exec " + postHook;
+        downloadCommand += " --exec \'" + preHook + "\'";
+        downloadCommand += " --exec \'" + postHook + "\'";
     } else if (setting.mediaType == "rss") {
         downloadCommand += " --embed-thumbnail --embed-metadata";
         downloadCommand += " --parse-metadata \"playlist_autonumber:%(track_number)s\"";
         downloadCommand += " --add-metadata --embed-chapters --playlist-reverse";
         downloadCommand += " -f 'bestaudio[ext=m4a]/bestaudio[ext=aac]/bestaudio[ext=mp3]' -o \"";
         downloadCommand += outFile + "\" -I " + to_string(setting.indexOverwrite) + "::1";
-        downloadCommand += " --exec " + postHook;
+        downloadCommand += " --exec \'" + preHook + "\'";
+        downloadCommand += " --exec \'" + postHook + "\'";
     }
 
-    // issue the command
+    // print info before the command call
     cout << "=="     << endl;
     cout << "== "    << colors::boldCyan("Starting Download...") << endl;
     cout << "==\t- " << colors::cyan("Media Type: ") << colors::boldGreen(setting.mediaType) << endl;
@@ -82,6 +94,59 @@ void downloader::start() {
         cout << "==\t- " << colors::cyan("Starting ID: ") << colors::boldGreen(to_string(setting.idOverwrite)) << endl;
     }
     cout << "==\t- " << colors::cyan("Output Path: ") << colors::boldGreen(outputPath) << endl;
+    cout << "==" << endl;
+    tools::printLine();
+
+    // actual command call
+    cout << "==" << endl;
+
+    // Open pipe to file and call the command
+    downloadCommand.append(" 2>&1"); // redirect output
+    FILE* pipe = popen(downloadCommand.c_str(), "r");
+    if (!pipe) {
+        std::cerr << "cmd failed!" << endl;
+    }
+
+    char buffer[30];
+    int segmentsDone = 0;
+    string line;
+    bool print = false;
+
+    char buf;
+    while (!feof(pipe) && !ferror(pipe)) {
+        while(1) {
+            if(feof(pipe) || ferror(pipe)) { // also stop on EOF or ERROR
+                break;
+            }
+            buf = fgetc(pipe);
+            line += buf;
+            if(buf == '\n' || buf == '\r') { // stop the line on newline or carriage return
+                break;
+            }
+        }
+
+        // act on certain strings in the output of the command
+        if(line.find("[download]") != std::string::npos) {
+            if(line.find("\% of") != std::string::npos) {
+                cout << "== " << colors::cyan(line);
+            } else {
+                if(line.find("Downloading item") != std::string::npos) {
+                    cout << "==" << endl;
+                    cout << "==" << endl;
+                    cout << "== " << colors::boldGreen(line);
+                } else {
+                    cout << "== " << line;
+                }
+            }
+        }
+
+        if(line.find("[Exec]") != std::string::npos) {
+            cout << "== " << colors::cyan(line);
+        }
+
+        line.clear();
+    }
+    pclose(pipe);
 
     // post
     cout << "==" << endl;
