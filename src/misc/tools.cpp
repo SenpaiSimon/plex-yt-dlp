@@ -1,7 +1,7 @@
 #include <misc/tools.hpp>
 
 void tools::printLine() {
-    cout << "=====================================================================================" << endl;
+    cout << "==========================================================================================================" << endl;
 }
 
 bool tools::fileExists(string filePath) {
@@ -68,14 +68,17 @@ string tools::getRequest(string req) {
 void tools::checkRequirements() {
     tools::printLine();
 
+    bool missing = false;
+
     cout << "==" << endl;
     cout << "==" << colors::boldCyan(" Cheching requirements...") << endl;
 
     cout << "==" << colors::cyan("\t- Searching yt-dlp");
     string yt_dlp_path = tools::getExecutablePath("yt-dlp");
     if(yt_dlp_path == "") {
-        cout << colors::boldRed(" - missing! ") << "Install from here: https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp" << endl;
-        exit(1);
+        missing = true;
+        cout << colors::boldRed(" - missing!") << endl;
+        cout << "==\t  " << colors::red("-> Install from here: ") <<  "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp" << endl;
     } else {
         cout << colors::boldGreen(" - found!") << endl;
     }
@@ -83,13 +86,13 @@ void tools::checkRequirements() {
     cout << "==" << colors::cyan("\t- Searching ffmpeg");
     string ffmpeg_path = tools::getExecutablePath("ffmpeg");
     if(ffmpeg_path == "") {
-        cout << colors::boldRed(" - missing! ");
+        missing = true;
+        cout << colors::boldRed(" - missing!") << endl;
         #ifdef __WIN32
-        cout << "Install with command: winget install -e --id Gyan.FFmpeg" << endl;
+        cout << "==\t  " << colors::red("-> Install with command: ") << "winget install -e --id Gyan.FFmpeg" << endl;
         #else
-        cout << "Install with command: sudo apt install ffmpeg" << endl;
+        cout << "==\t  " << colors::red("-> Install with command: ") << "sudo apt install ffmpeg" << endl;
         #endif
-        exit(1);
     } else {
         cout << colors::boldGreen(" - found!") << endl;
     }
@@ -97,14 +100,18 @@ void tools::checkRequirements() {
     cout << "==" << colors::cyan("\t- Searching Curl");
     string curl_path = tools::getExecutablePath("curl");
     if(curl_path == "") {
+        missing = true;
         cout << colors::boldRed(" - missing!") << endl;
-        exit(1);
     } else {
         cout << colors::boldGreen(" - found!") << endl;
     }
 
     cout << "==" << endl;
     tools::printLine();
+
+    if(missing) {
+        exit(1);
+    }
 }
 
 void tools::printHelp() {

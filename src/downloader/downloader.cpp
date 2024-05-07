@@ -19,13 +19,15 @@ void downloader::start() {
     string outFile = "";
     string customFolder = "";
     if(setting.mediaType == "video") { // single video
+        cout << "==" << endl;
         cout << "== Enter " << colors::cyan("Folder Name") << ": ";
-        cin >> customFolder;
+        getline(cin, customFolder);
         outputPath = conf["videoPath"];
         outFile = string(conf["tempPath"]) + "/%(uploader)s/" + customFolder + "/%(title)s [%(id)s].%(ext)s";
     } else if (setting.mediaType == "music") { // single music file
+        cout << "==" << endl;
         cout << "== Enter " << colors::cyan("Folder Name") << ": ";
-        cin >> customFolder;
+        getline(cin, customFolder);
         outputPath = conf["musicPath"];
         outFile = string(conf["tempPath"]) + "/%(uploader)s/" + customFolder + "/%(title)s [%(id)s].%(ext)s";
     } else if (setting.mediaType == "videoPlaylist") { // whole video playlist
