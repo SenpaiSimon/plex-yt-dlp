@@ -93,7 +93,12 @@ void idExtractor::extractData() {
                 setting->indexOverwrite = 1;
             }
         }
-    } else if (setting->mediaType == "rss") {
-
+    } else { // just set it to the beginning for everything else if no overwrite is set
+        if(setting->idOverwrite == -1) {
+            setting->idOverwrite = 1;
+        }
+        if(setting->indexOverwrite == -1) {
+            setting->indexOverwrite = 1;
+        }
     }
 }
