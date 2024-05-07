@@ -48,9 +48,14 @@ void idExtractor::extractData() {
 
             // get the highest episode number and add 1 to it
             nextEpisode = *max_element(episodesDownloaded.begin(), episodesDownloaded.end()) + 1;
-            // commit it to the settings
-            setting->idOverwrite = id;
-            setting->indexOverwrite = nextEpisode;
+
+            // commit it to the settings, but only if no forced overwrite is set
+            if(setting->idOverwrite == -1) {
+                setting->idOverwrite = id;
+            }
+            if(setting->indexOverwrite == -1) {
+                setting->indexOverwrite = nextEpisode;
+            }
         } else {
             // its a new playlist
             int channelPlaylists = 0;
@@ -60,13 +65,19 @@ void idExtractor::extractData() {
                         channelPlaylists++;
                     }
                 }
-                setting->idOverwrite = channelPlaylists + 1;
+                if(setting->idOverwrite == -1) {
+                    setting->idOverwrite = channelPlaylists + 1;
+                }
             } else {
                 // its the first one from this channel so just use one as an id
-                setting->idOverwrite = 1;
+                if(setting->idOverwrite == -1) {
+                    setting->idOverwrite = 1;
+                }
             }
-
-            cout << setting->idOverwrite << endl;
+            // since its a new playlist, also download from the first video
+            if(setting->indexOverwrite == -1) {
+                setting->indexOverwrite = 1;
+            }
         }
     } else if (setting->mediaType == "music") {
 

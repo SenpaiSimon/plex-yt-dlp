@@ -32,5 +32,8 @@ int main(int argc, char** argv){
     idExtractor extractor(&setting, conf);
     extractor.extractData();
 
+    cout << setting.idOverwrite << endl;
+    cout << setting.indexOverwrite << endl;
+
     return 0;
 }

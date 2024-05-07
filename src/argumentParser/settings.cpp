@@ -5,8 +5,8 @@ settings::settings() {
     this->showVersion = false;
     this->dlUrl = "defaultUrl";
     this->mediaType = "defaultMedia";
-    this->indexOverwrite = 0;
-    this->idOverwrite = 1;
+    this->indexOverwrite = -1;
+    this->idOverwrite = -1;
 
     char cCurrentPath[FILENAME_MAX];
     if (GetCurrentDir(cCurrentPath, sizeof(cCurrentPath))) {
