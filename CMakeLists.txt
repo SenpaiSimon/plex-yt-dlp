@@ -22,6 +22,7 @@ add_executable(${PROJECT_NAME}
     src/argumentParser/argumentParser.cpp
     src/config.cpp
     src/idExtractor.cpp
+    src/downloader/downloader.cpp
     src/main.cpp
 )
 

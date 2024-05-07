@@ -5,6 +5,7 @@
 #include <argumentParser/argumentParser.hpp>
 #include <config.hpp>
 #include <idExtractor.hpp>
+#include <downloader/downloader.hpp>
 
 // externals
 #include <iostream>

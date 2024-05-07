@@ -32,8 +32,9 @@ int main(int argc, char** argv){
     idExtractor extractor(&setting, conf);
     extractor.extractData();
 
-    cout << setting.idOverwrite << endl;
-    cout << setting.indexOverwrite << endl;
+    // start the downloader
+    downloader dl(setting, conf);
+    dl.start();
 
     return 0;
 }
