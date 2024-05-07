@@ -51,6 +51,11 @@ settings argumentParser::parse() {
         exit(1);
     }
 
+    // add playlist tag if url provided is a playlist
+    if(this->setting.dlUrl.find("playlist?list=") != std::string::npos) {
+        this->setting.mediaType += "Playlist";
+    }
+
     return this->setting;
 }
 
@@ -65,9 +70,10 @@ void argumentParser::checkArguments() {
     }
 
     // check if mediaType is valid
-    if(this->setting.mediaType != "single" && \
-       this->setting.mediaType != "music" && \
-       this->setting.mediaType != "playlist" && \
+    if(this->setting.mediaType != "music" && \
+       this->setting.mediaType != "musicPlaylist" && \
+       this->setting.mediaType != "video" && \
+       this->setting.mediaType != "videoPlaylist" && \
        this->setting.mediaType != "rss") {
         cout << colors::boldRed("== Error: Unknown mediaType") << endl;
         exit(1);
