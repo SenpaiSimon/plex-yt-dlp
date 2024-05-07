@@ -69,4 +69,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: KitsuneScraper-${{ matrix.os }}-${{ matrix.build_type }}  # Customizable names
-        path: ${{ steps.strings.outputs.build-output-dir }}/KitsuneScraper*
+        path: ${{ steps.strings.outputs.build-output-dir }}/plex-yt-dlp*

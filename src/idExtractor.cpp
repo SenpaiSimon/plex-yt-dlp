@@ -43,7 +43,7 @@ void idExtractor::extractData() {
             // loop through files in playlist directory
             if(setting->mediaType == "videoPlaylist") {
                 for (const auto& entry : std::filesystem::directory_iterator(playlistPath)) {
-                    string fileName = entry.path().filename();
+                    string fileName = entry.path().filename().string();
                     filesInDir.push_back(fileName);
 
                     id = std::stoi(string(tools::getRegexMatches(fileName, "S([0-9]+)")[0]).substr(1));
