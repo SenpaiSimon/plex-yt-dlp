@@ -1,6 +1,8 @@
 # plex-yt-dlp
 
-Easy to use Bash-Script based wrapper for using [yt-dlp](https://github.com/yt-dlp/yt-dlp).
+[![CMake on multiple platforms](https://github.com/SenpaiSimon/plex-yt-dlp/actions/workflows/cmake-multi-platform.yml/badge.svg)](https://github.com/SenpaiSimon/plex-yt-dlp/actions/workflows/cmake-multi-platform.yml)
+
+Easy to use binary wrapper for using [yt-dlp](https://github.com/yt-dlp/yt-dlp).
 
 # What it does
 * This creates the Folder-Structures and also the File-Names exactly like it's needed for using in a Plex-Library.
@@ -42,14 +44,6 @@ sudo apt install ffmpeg
 sudo apt install python3-mutagen
 ```
 
-# Exeutable
-
-Also make sure both scripts are executable. Just run following commands:
-```bash
-chmod +x ytdl.sh
-chmod +x supermove.sh
-```
-
 # Usage
 
 ## Creating a YouTube Api-Key
@@ -60,65 +54,72 @@ Feel free to refer to this guide
 ## Config-File
 
 Upon running the script for the first time you will be prompted with the message that a `config.txt`-File was created.
-Please add your paths and your api-key to the `config.txt`-File.
+Please add your paths and your api-key to the `config.json`-File.
 
 ### Config-File Example
 
 > NOTE: This is not a real API Key
 
-```text
-# Put Video Path in the next line
-./video
-# Put Music Path in the next line
-./music
-# Put YouTube API Key in the next line
-WDdhjoaiwdhoiWADWAdoihDAWdoih
+```json
+{
+    "apiKey": "iwdowia2138DOAWIDHN",
+    "tempPath": "./temp",
+    "musicPath": "./music",
+    "rssPath": "./rss",
+    "videoPath": "./video"
+}
 ```
 
 # Usage
 
-Just use `ytdl.sh -h` or `ytdl.sh --help` for the help screen.
+Just use `plex-yt-dlp -h` or `plex-yt-dl --help` for the help screen.
 
 This will print something like:
 
-```
-ytdl.sh [url] [mediaType] [playlistStartIndex] [forceID]
-
-
-[url] = url to playlist or single video
-
-[mediaType] = music, playlist, single
-    single  -> Single Video
-    plalist -> whole playlist
-    music   -> only download sound - works with playlist or single file
-    rss     -> Download whole RSS Feed
-
-[playlistStartIndex] = force a starting index
-
-[forceID] = overwrites the auto-id
+```text
+=================================================================
+==
+== plex-yt-dlp [OPTIONS]
+==
+== -h, --help
+==      Display this help screen
+==
+== -v, --version
+==      Display current version
+==
+== -u, --url [urlHere]
+==      Url to download
+==
+== -t, --type [mediaType]
+==      What output you want -- "video" or "music" or "rss"
+==
+== -io, --indexOverwrite [num] -- optional
+==      Overwrite the playlist index
+==
+== -ido, --idOverwrite [num] -- optional
+==      Overwrite the auto ID
+==
+=================================================================
 ```
 
 ## Examples
 
 ```bash
-# Download a single video
-ytdl.sh urlToVideoHere single
+# Download a video/playlist
+ytdl.sh -u ulrHere -t video
 
-# Download a playlist
-ytdl.sh urlToPlaylistHere playlist
-
-# Download a music playlist
-ytdl.sh urlToPlaylistHere music
+# Download a single track or playlist
+ytdl.sh -u urlHere -t music
 
 # Download a rss feed
-ytdl.sh urlToPlaylistHere rss
+ytdl.sh -u urlHere -t rss
 
-# Download a playlist starting from video 10
-ytdl.sh urlToPlaylistHere playlist 10
+# Download a playlist starting from index 10
+ytdl.sh -u ulrHere -t video -io 10
 
-# Download a music playlist starting from video 10
-ytdl.sh urlToPlaylistHere music 10
+# Download a music playlist starting from index 10
+ytdl.sh -u ulrHere -t music -io 10
 
-# Download a rss feed starting from video 10
-ytdl.sh urlToPlaylistHere rss 10
+# Download a rss feed starting from index 10
+ytdl.sh -u ulrHere -t rss -io 10
 ```
