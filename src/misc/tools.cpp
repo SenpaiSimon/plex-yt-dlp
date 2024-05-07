@@ -115,7 +115,29 @@ void tools::checkRequirements() {
 }
 
 void tools::printHelp() {
-    cout << "help TODO" << endl;
+    tools::printLine();
+    cout << "==" << endl;
+    cout << "== plex-yt-dlp [OPTIONS]" << endl;
+    cout << "==" << endl;
+    cout << "== -h, --help" << endl;
+    cout << "==\tDisplay this help screen" << endl;
+    cout << "==" << endl;
+    cout << "== -v, --version" << endl;
+    cout << "==\tDisplay current version" << endl;
+    cout << "==" << endl;
+    cout << "== -u, --url [urlHere]" << endl;
+    cout << "==\tUrl to download" << endl;
+    cout << "==" << endl;
+    cout << "== -t, --type [mediaType]" << endl;
+    cout << "==\tWhat output you want -- \"video\" or \"music\" or \"rss\"" << endl;
+    cout << "==" << endl;
+    cout << "== -io, --indexOverwrite [num] -- optional" << endl;
+    cout << "==\tOverwrite the playlist index" << endl;
+    cout << "==" << endl;
+    cout << "== -ido, --idOverwrite [num] -- optional" << endl;
+    cout << "==\tOverwrite the auto ID" << endl;
+    cout << "==" << endl;
+    tools::printLine();
 }
 
 smatch tools::getRegexMatches(string str, string pattern) {

@@ -46,8 +46,13 @@ settings argumentParser::parse() {
             i++;
             continue;
         }
+        
+        tools::printLine();
+        cout << "==" << endl;
+        cout << "==" << colors::boldRed(" Error: Unknown argument: ") << this->argValues[i] << endl;
+        cout << "==" << endl;
+        tools::printLine();
 
-        cout << colors::boldRed("== Error: Unknown argument: ") << this->argValues[i] << endl;
         exit(1);
     }
 
@@ -65,7 +70,11 @@ void argumentParser::checkArguments() {
     std::regex urlRegex(urlPattern);
 
     if (std::regex_match(this->setting.dlUrl, urlRegex) != true) {
-        cout << colors::boldRed("== Error: Invalid URL") << endl;
+        tools::printLine();
+        cout << "==" << endl;
+        cout << "==" <<colors::boldRed(" Error: Invalid URL") << endl;
+        cout << "==" << endl;
+        tools::printLine();
         exit(1);
     }
 
@@ -76,7 +85,11 @@ void argumentParser::checkArguments() {
          this->setting.mediaType == "videoPlaylist" || \
          this->setting.mediaType == "rss")) 
         {
-        cout << colors::boldRed("== Error: Unknown mediaType") << endl;
+        tools::printLine();
+        cout << "==" << endl;
+        cout << "==" << colors::boldRed(" Error: Unknown mediaType: ") << setting.mediaType << endl;
+        cout << "==" << endl;
+        tools::printLine();
         exit(1);
     }
 }

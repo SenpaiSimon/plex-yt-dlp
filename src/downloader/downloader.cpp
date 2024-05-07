@@ -50,8 +50,8 @@ void downloader::start() {
     string finalFolderPath = finalFilePath.erase(finalFilePath.find_last_of("/"), finalFilePath.length() - finalFilePath.find_last_of("/"));
 
     #ifdef __WIN32 // TODO command for windows
-    string preHook ="";
-    string postHook = "tempHook";
+    string preHook = "mkdir -p \"" + outputPath + finalFolderPath + "\"";
+    string postHook = "mv \"" + outFile + "\" \"" + outputPath + finalFolderPath + "\"";
     #else
     string preHook = "mkdir -p \"" + outputPath + finalFolderPath + "\"";
     string postHook = "mv \"" + outFile + "\" \"" + outputPath + finalFolderPath + "\"";

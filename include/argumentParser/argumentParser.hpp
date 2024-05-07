@@ -7,6 +7,7 @@
 
 #include <argumentParser/settings.hpp>
 #include <misc/colors.hpp>
+#include <misc/tools.hpp>
 
 using std::string;
 using std::cout;
