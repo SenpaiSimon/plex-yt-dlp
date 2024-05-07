@@ -2,7 +2,7 @@
 
 // own sources
 #include <tools.hpp>
-#include <argumentParser.hpp>
+#include <argumentParser/argumentParser.hpp>
 
 // externals
 #include <iostream>

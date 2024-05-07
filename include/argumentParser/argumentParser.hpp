@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <regex>
 
-#include <settings.hpp>
+#include <argumentParser/settings.hpp>
 #include <colors.hpp>
 
 using std::string;

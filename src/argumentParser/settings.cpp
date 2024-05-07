@@ -1,4 +1,4 @@
-#include <settings.hpp>
+#include <argumentParser/settings.hpp>
 
 settings::settings() {
     this->showHelp = false;

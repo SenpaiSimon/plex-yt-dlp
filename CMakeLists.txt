@@ -18,8 +18,8 @@ INCLUDE_DIRECTORIES(include)
 add_executable(${PROJECT_NAME}
     src/colors.cpp
     src/tools.cpp
-    src/settings.cpp
-    src/argumentParser.cpp
+    src/argumentParser/settings.cpp
+    src/argumentParser/argumentParser.cpp
     src/main.cpp
 )
 
