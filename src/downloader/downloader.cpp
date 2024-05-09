@@ -43,7 +43,7 @@ void downloader::start() {
         tempOutFile = tempPath + "/%(title)s.%(ext)s";
     } else if (setting.mediaType == "rss") { // single rss feed
         outputPath = conf["rssPath"];
-        tempPath = string(conf["tempPath"]) + "/%(uploader)s/%(playlist_title)s"; 
+        tempPath = string(conf["tempPath"]) + "/%(playlist_title)s"; 
         tempOutFile = tempPath + "/%(title)s.%(ext)s";
     }
 
