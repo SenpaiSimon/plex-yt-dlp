@@ -76,6 +76,7 @@ void downloader::start() {
     } else if (setting.mediaType == "music" || setting.mediaType == "musicPlaylist") {
         downloadCommand += " --embed-thumbnail --embed-metadata";
         downloadCommand += " --parse-metadata \"playlist_autonumber:%(track_number)s\"";
+        downloadCommand += " --parse-metadata \"playlist_title:%(album)s\"";
         downloadCommand += " --add-metadata --embed-chapters";
         downloadCommand += " -f 'bestaudio[ext=m4a]/bestaudio[ext=aac]/bestaudio[ext=mp3]' -o \"";
         downloadCommand += tempOutFile + "\" -I " + to_string(setting.indexOverwrite) + "::1";
