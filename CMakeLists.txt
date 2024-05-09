@@ -27,7 +27,7 @@ add_executable(${PROJECT_NAME}
 )
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC
-    CUR_VERSION="1.0"
+    CUR_VERSION="1.2"
 )
 
 # Libraries
