@@ -6,99 +6,154 @@ idExtractor::idExtractor(settings *setting, json conf) {
 }
 
 void idExtractor::extractData() {
-    string channelTitle;
-    string playlistTitle;
-
-    if(setting->mediaType == "videoPlaylist" || setting->mediaType == "musicPlaylist") {
-        // retrieve channel name and title to build filepath
-        string playlistId = tools::getRegexMatches(setting->dlUrl, "PL[\\w-]*")[0];
-
-        // create api request
-        string apiRequest = "https://www.googleapis.com/youtube/v3/playlists?part=snippet&id=" + playlistId \
-                          + string("&key=") + string(conf["apiKey"]);
-
-        // call and parse request
-        string res = tools::getRequest(apiRequest);
-        json parsedRes = json::parse(res)["items"][0]["snippet"];
-
-        // extract data from request
-        channelTitle = parsedRes["channelTitle"];
-        playlistTitle = string(parsedRes["title"]);
-        if(setting->mediaType == "videoPlaylist") {
-            playlistTitle += "[youtube-" + playlistId + "]";
-        }
-
-        // check if playlist exists
-        string channelPath = (setting->mediaType == "videoPlaylist" ? string(conf["videoPath"]) : string(conf["musicPath"]))\
-                           + "/" + channelTitle;
-        string playlistPath = channelPath + "/" + playlistTitle;
-
-        if(fs::exists(playlistPath)) {
-            // playlist has been downloaded at some point -- get the season and highest episode number
-            vector<string> filesInDir;
-            int id;
-            int nextEpisode;
-            vector<int> episodesDownloaded;
-
-            // loop through files in playlist directory
-            if(setting->mediaType == "videoPlaylist") {
-                for (const auto& entry : std::filesystem::directory_iterator(playlistPath)) {
-                    string fileName = entry.path().filename().string();
-                    filesInDir.push_back(fileName);
-
-                    id = std::stoi(string(tools::getRegexMatches(fileName, "S([0-9]+)")[0]).substr(1));
-                    int curEpisode = std::stoi(string(tools::getRegexMatches(fileName, "E([0-9]+)")[0]).substr(1));
-                    episodesDownloaded.push_back(curEpisode);
-                }
-                // get the highest episode number and add 1 to it
-                nextEpisode = *max_element(episodesDownloaded.begin(), episodesDownloaded.end()) + 1;
-
-                // only playlists of type video have an id
-                if(setting->idOverwrite == -1) {
-                    setting->idOverwrite = id;
-                }
-            } else { // its type musicPlaylist
-                // count the number of files already there
-                for (const auto& entry : std::filesystem::directory_iterator(playlistPath)) {
-                    nextEpisode++;
-                }
-                // increment it by one more
-                nextEpisode++;
-            }
-
-            // commit it to the settings, but only if no forced overwrite is set
-            if(setting->indexOverwrite == -1) {
-                setting->indexOverwrite = nextEpisode;
-            }
-        } else {
-            // its a new playlist
-            int channelPlaylists = 0;
-            if(fs::exists(channelPath) && setting->mediaType == "videoPlaylist") {
-                for (const auto& entry : std::filesystem::directory_iterator(channelPath)) {
-                    if (std::filesystem::is_directory(entry.path())) {
-                        channelPlaylists++;
-                    }
-                }
-                if(setting->idOverwrite == -1) {
-                    setting->idOverwrite = channelPlaylists + 1;
-                }
-            } else {
-                // its the first one from this channel so just use one as an id
-                if(setting->idOverwrite == -1) {
-                    setting->idOverwrite = 1;
-                }
-            }
-            // since its a new playlist and a new channel also download from the first video
-            if(setting->indexOverwrite == -1) {
-                setting->indexOverwrite = 1;
-            }
-        }
-    } else { // just set it to the beginning for everything else if no overwrite is set
+    // these two types dont need id extraction
+    if(setting->mediaType == "music" || setting->mediaType == "video") {
         if(setting->idOverwrite == -1) {
             setting->idOverwrite = 1;
         }
         if(setting->indexOverwrite == -1) {
             setting->indexOverwrite = 1;
         }
+
+        return;
     }
+
+    cout << "==" << endl;
+    cout << "== " << colors::boldCyan("Generating auto ID and auto Index...") << endl;
+    cout << "==\t" << colors::cyan("- Scraping filespaths");
+
+    string playlistPath = "";
+    string channelPath = "";
+    string playlistCount = "";
+    int episodeCount = 0;
+    int id = 0;
+
+    // setup paths and names
+    if(setting->mediaType == "videoPlaylist") {
+        // this path is without a ending slash /
+        playlistPath = string(conf["videoPath"]) + tools::executeCommand(YT_DLP_PARSE_PATH(DEFAULT_VIDEO_PLAYLIST_PATH_PATTERN, setting->dlUrl));
+        // also without a ending slash /
+        channelPath = playlistPath;
+        channelPath = channelPath.erase(channelPath.find_last_of("/"));
+    } 
+
+    if(setting->mediaType == "musicPlaylist") {
+        // this path is without a ending slash /
+        playlistPath = string(conf["musicPath"]) + tools::executeCommand(YT_DLP_PARSE_PATH(DEFAULT_MUSIC_PLAYLIST_PATH_PATTERN, setting->dlUrl));
+        // also without a ending slash /
+        channelPath = playlistPath;
+        channelPath = channelPath.erase(channelPath.find_last_of("/"));
+    }
+    
+    if(setting->mediaType == "rss") { 
+        // this path is without a ending slash /
+        playlistPath = string(conf["rssPath"]) + tools::executeCommand(YT_DLP_PARSE_PATH(DEFAULT_RSS_PLAYLIST_PATH_PATTERN, setting->dlUrl));
+        playlistCount = tools::executeCommand(YT_DLP_PARSE_PATH("%(playlist_count)s", setting->dlUrl));
+    }
+
+    cout << colors::boldGreen(" - done") << endl;
+
+    //  its a existing playlist from and existing channel
+    if(fs::exists(playlistPath)) {
+        cout << "==\t" << colors::cyan("- Found existing Playlist from existing Channel");
+
+        // this can run for videosPlaylist, musicPlaylist and also RSS
+        for (const auto& entry : std::filesystem::directory_iterator(playlistPath)) {
+            // skip the info files
+            if(entry.path().extension() != ".json" && entry.path().extension() != ".info.json" && entry.path().extension() != ".info") { 
+                episodeCount++;
+            }
+        }
+
+        if(setting->indexOverwrite == -1) {
+            // its +1 because we want the next one to be downloaded
+            if(setting->mediaType == "rss") {
+                // because rss feeds are inverted
+                setting->indexOverwrite = std::stoi(playlistCount) - episodeCount;
+            } else {
+                setting->indexOverwrite = episodeCount + 1;
+            }
+        }
+
+        if(setting->mediaType == "videoPlaylist") {
+            for (const auto& entry : std::filesystem::directory_iterator(playlistPath)) {
+                // get the filename and extract the id by Season
+                string fileName = entry.path().filename().string();
+                // match for pattern SxEx
+                string match = tools::getRegexMatches(fileName, "S([0-9]+)E([0-9]+)")[0];
+
+                // if its empty just skip it
+                if(match.empty()) {
+                    continue;
+                } else {
+                    // strip the episode number
+                    match = tools::getRegexMatches(match, "S([0-9]+)")[0];
+                    // else get the biggest of all ids
+                    int curId = std::stoi(match.substr(1));
+                    if(curId > id) {
+                        id = curId;
+                    }
+                }
+            }
+
+            if(setting->idOverwrite == -1) {
+                setting->idOverwrite = id;
+            }
+        }
+
+        // we are done here
+        cout << colors::boldGreen(" - done") << endl;
+        cout << "==" << endl;
+        tools::printLine();
+        return;
+    }
+
+    // its a new playlist from an existing channel
+    if(fs::exists(channelPath)) {
+        cout << "==\t" << colors::cyan("- Found new Playlist from existing Channel");
+        // since its a new playlist it can be set to 1
+        if(setting->indexOverwrite == -1) {
+            if(setting->mediaType == "rss") {
+                setting->indexOverwrite = std::stoi(playlistCount);
+            } else {
+                setting->indexOverwrite = 1;
+            }
+        }
+
+        // now generate a new id but only for video playlists
+        if(setting->mediaType == "videoPlaylist") {
+            for (const auto& entry : std::filesystem::directory_iterator(channelPath)) {
+                if (std::filesystem::is_directory(entry.path())) {
+                    id++;
+                }
+            }
+
+            // its +1 because we want a new id
+            if(setting->idOverwrite == -1) {
+                setting->idOverwrite = id + 1;
+            }
+        }
+
+        // we are done here
+        cout << colors::boldGreen(" - done") << endl;
+        cout << "==" << endl;
+        tools::printLine();
+        return;
+    }
+
+    cout << "==\t" << colors::cyan("- Found new Playlist from new Channel");
+    // its a new channel and a new playlist
+    if(setting->idOverwrite == -1) {
+        setting->idOverwrite = 1;
+    }
+    if(setting->indexOverwrite == -1) {
+        if(setting->mediaType == "rss") {
+            setting->indexOverwrite = std::stoi(playlistCount);
+        } else {
+            setting->indexOverwrite = 1;
+        }
+    }
+    cout << colors::boldGreen(" - done") << endl;
+    cout << "==" << endl;
+    tools::printLine();
 }

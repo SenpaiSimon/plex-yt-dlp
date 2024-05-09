@@ -36,6 +36,7 @@ string tools::executeCommand(const string& command) {
     while(fgets(buffer, sizeof(buffer), fp) != NULL) {
         result += buffer;
     }
+    result.erase(result.find("\n"), 1);
     pclose(fp);
     return result;
 }

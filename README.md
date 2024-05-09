@@ -31,11 +31,6 @@ On Windows this script is meant to be run in the git-bash shell.
 
 # Pre-Setup
 
-## Creating a YouTube Api-Key
-
-Feel free to refer to this guide
-[How to Get a YouTube API Key](https://blog.hubspot.com/website/how-to-get-youtube-api-key)
-
 ## Config-File
 
 Upon running the script for the first time you will be prompted with the message that a `config.txt`-File was created.
@@ -43,17 +38,22 @@ Please add your paths and your api-key to the `config.json`-File.
 
 ### Config-File Example
 
-> NOTE: This is not a real API Key
+> NOTE: They can be relative paths to your binary or absolute paths
 
 ```json
 {
-    "apiKey": "iwdowia2138DOAWIDHN",
     "tempPath": "./temp",
     "musicPath": "./music",
     "rssPath": "./rss",
     "videoPath": "./video"
 }
 ```
+
+> Why the temp path?
+
+* The Temp-Path is where the files will be downloaded and also where the files will be modified
+* If your other paths refer to a NAS-Drive for example this last step would be really slow
+* The Files will get moved from temp to the final path after the converting process is finished
 
 # Usage
 

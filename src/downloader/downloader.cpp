@@ -24,27 +24,27 @@ void downloader::start() {
         cout << "== Enter " << colors::cyan("Folder Name") << ": ";
         getline(cin, customFolder);
         outputPath = conf["videoPath"];
-        tempPath = string(conf["tempPath"]) + "/%(uploader)s/" + customFolder; 
-        tempOutFile =  tempPath + "/%(title)s [%(id)s].%(ext)s";
+        tempPath = string(conf["tempPath"]) + DEFAULT_VIDEO_PATH_PATTERN(customFolder); 
+        tempOutFile =  tempPath + DEFAULT_VIDEO_FILE_NAME;
     } else if (setting.mediaType == "music") { // single music file
         cout << "==" << endl;
         cout << "== Enter " << colors::cyan("Folder Name") << ": ";
         getline(cin, customFolder);
         outputPath = conf["musicPath"];
-        tempPath = string(conf["tempPath"]) + "/%(uploader)s/" + customFolder;
-        tempOutFile =  tempPath + "/%(title)s [%(id)s].%(ext)s";
+        tempPath = string(conf["tempPath"]) + DEFAULT_MUSIC_PATH_PATTERN(customFolder);
+        tempOutFile =  tempPath + DEFAULT_MUSIC_FILE_NAME;
     } else if (setting.mediaType == "videoPlaylist") { // whole video playlist
         outputPath = conf["videoPath"];
-        tempPath = string(conf["tempPath"]) + "/%(uploader)s/%(playlist_title)s [youtube-%(playlist_id)s]"; 
-        tempOutFile = tempPath + "/%(title)s - S" + to_string(setting.idOverwrite) + "E%(playlist_index)s [%(id)s].%(ext)s";
+        tempPath = string(conf["tempPath"]) + DEFAULT_VIDEO_PLAYLIST_PATH_PATTERN; 
+        tempOutFile = tempPath + DEFAULT_VIDEO_PLAYLIST_FILE_NAME(to_string(setting.idOverwrite));
     } else if (setting.mediaType == "musicPlaylist") { // whole music playlist
         outputPath = conf["musicPath"];
-        tempPath = string(conf["tempPath"]) + "/%(uploader)s/%(playlist_title)s"; 
-        tempOutFile = tempPath + "/%(title)s.%(ext)s";
+        tempPath = string(conf["tempPath"]) + DEFAULT_MUSIC_PLAYLIST_PATH_PATTERN; 
+        tempOutFile = tempPath + DEFAULT_MUSIC_PLAYLIST_FILE_NAME;
     } else if (setting.mediaType == "rss") { // single rss feed
         outputPath = conf["rssPath"];
-        tempPath = string(conf["tempPath"]) + "/%(playlist_title)s"; 
-        tempOutFile = tempPath + "/%(title)s.%(ext)s";
+        tempPath = string(conf["tempPath"]) + DEFAULT_RSS_PLAYLIST_PATH_PATTERN; 
+        tempOutFile = tempPath + DEFAULT_RSS_PLAYLIST_FILE_NAME;
     }
 
     // post command hook
@@ -86,7 +86,7 @@ void downloader::start() {
         downloadCommand += " --parse-metadata \"playlist_autonumber:%(track_number)s\"";
         downloadCommand += " --add-metadata --embed-chapters --playlist-reverse";
         downloadCommand += " -f 'bestaudio[ext=m4a]/bestaudio[ext=aac]/bestaudio[ext=mp3]' -o \"";
-        downloadCommand += tempOutFile + "\" -I " + to_string(setting.indexOverwrite) + "::1";
+        downloadCommand += tempOutFile + "\" -I 1:" + to_string(setting.indexOverwrite) + ":1";
         downloadCommand += " --exec \'" + preHook + "\'";
         downloadCommand += " --exec \'" + postHook + "\'";
     }
@@ -94,13 +94,13 @@ void downloader::start() {
     // print info before the command call
     cout << "=="     << endl;
     cout << "== "    << colors::boldCyan("Starting Download...") << endl;
-    cout << "==\t- " << colors::cyan("Media Type: ") << colors::boldGreen(setting.mediaType) << endl;
-    cout << "==\t- " << colors::cyan("Download URL: ") << colors::boldGreen(setting.dlUrl) << endl;
-    cout << "==\t- " << colors::cyan("Starting Index: ") << colors::boldGreen(to_string(setting.indexOverwrite)) << endl;
+    cout << "==\t" << colors::cyan("- Media Type: ") << colors::boldGreen(setting.mediaType) << endl;
+    cout << "==\t" << colors::cyan("- Download URL: ") << colors::boldGreen(setting.dlUrl) << endl;
+    cout << "==\t" << colors::cyan("- Starting Index: ") << colors::boldGreen(to_string(setting.indexOverwrite)) << endl;
     if(setting.mediaType == "videoPlaylist") {
-        cout << "==\t- " << colors::cyan("Starting ID: ") << colors::boldGreen(to_string(setting.idOverwrite)) << endl;
+        cout << "==\t" << colors::cyan("- Starting ID: ") << colors::boldGreen(to_string(setting.idOverwrite)) << endl;
     }
-    cout << "==\t- " << colors::cyan("Output Path: ") << colors::boldGreen(outputPath) << endl;
+    cout << "==\t" << colors::cyan("- Output Path: ") << colors::boldGreen(outputPath) << endl;
     cout << "==" << endl;
     tools::printLine();
 

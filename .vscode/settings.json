@@ -60,6 +60,7 @@
         "typeinfo": "cpp",
         "valarray": "cpp",
         "variant": "cpp",
-        "ratio": "cpp"
+        "ratio": "cpp",
+        "format": "cpp"
     }
 }
