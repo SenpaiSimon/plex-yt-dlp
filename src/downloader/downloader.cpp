@@ -16,33 +16,39 @@ void downloader::start() {
 
     // first setup the output folder path
     string outputPath = "";
-    string outFile = "";
+    string tempOutFile = "";
+    string tempPath = "";
     string customFolder = "";
     if(setting.mediaType == "video") { // single video
         cout << "==" << endl;
         cout << "== Enter " << colors::cyan("Folder Name") << ": ";
         getline(cin, customFolder);
         outputPath = conf["videoPath"];
-        outFile = string(conf["tempPath"]) + "/%(uploader)s/" + customFolder + "/%(title)s [%(id)s].%(ext)s";
+        tempPath = string(conf["tempPath"]) + "/%(uploader)s/" + customFolder; 
+        tempOutFile =  tempPath + "/%(title)s [%(id)s].%(ext)s";
     } else if (setting.mediaType == "music") { // single music file
         cout << "==" << endl;
         cout << "== Enter " << colors::cyan("Folder Name") << ": ";
         getline(cin, customFolder);
         outputPath = conf["musicPath"];
-        outFile = string(conf["tempPath"]) + "/%(uploader)s/" + customFolder + "/%(title)s [%(id)s].%(ext)s";
+        tempPath = string(conf["tempPath"]) + "/%(uploader)s/" + customFolder;
+        tempOutFile =  tempPath + "/%(title)s [%(id)s].%(ext)s";
     } else if (setting.mediaType == "videoPlaylist") { // whole video playlist
         outputPath = conf["videoPath"];
-        outFile = string(conf["tempPath"]) + "/%(uploader)s/%(playlist_title)s [youtube-%(playlist_id)s]/%(title)s - S" + to_string(setting.idOverwrite) + "E%(playlist_index)s [%(id)s].%(ext)s";
+        tempPath = string(conf["tempPath"]) + "/%(uploader)s/%(playlist_title)s [youtube-%(playlist_id)s]"; 
+        tempOutFile = tempPath + "/%(title)s - S" + to_string(setting.idOverwrite) + "E%(playlist_index)s [%(id)s].%(ext)s";
     } else if (setting.mediaType == "musicPlaylist") { // whole music playlist
         outputPath = conf["musicPath"];
-        outFile = string(conf["tempPath"]) + "/%(uploader)s/%(playlist_title)s/%(title)s.%(ext)s";
+        tempPath = string(conf["tempPath"]) + "/%(uploader)s/%(playlist_title)s"; 
+        tempOutFile = tempPath + "/%(title)s.%(ext)s";
     } else if (setting.mediaType == "rss") { // single rss feed
         outputPath = conf["rssPath"];
-        outFile = string(conf["tempPath"]) + "/%(uploader)s/%(playlist_title)s/%(title)s.%(ext)s";
+        tempPath = string(conf["tempPath"]) + "/%(uploader)s/%(playlist_title)s"; 
+        tempOutFile = tempPath + "/%(title)s.%(ext)s";
     }
 
     // post command hook
-    string finalFilePath = outFile;
+    string finalFilePath = tempOutFile;
     // first remove the ./temp dir prefix
     string toBeRemoved = string(conf["tempPath"]);
     finalFilePath = finalFilePath.erase(finalFilePath.find(toBeRemoved), toBeRemoved.length());
@@ -51,10 +57,11 @@ void downloader::start() {
 
     #ifdef __WIN32 // TODO command for windows
     string preHook = "mkdir -p \"" + outputPath + finalFolderPath + "\"";
-    string postHook = "mv \"" + outFile + "\" \"" + outputPath + finalFolderPath + "\"";
+    string postHook = "mv \"" + tempPath + "\"/* \"" + outputPath + finalFolderPath + "\"";
     #else
     string preHook = "mkdir -p \"" + outputPath + finalFolderPath + "\"";
-    string postHook = "mv \"" + outFile + "\" \"" + outputPath + finalFolderPath + "\"";
+    string cdHook = "cd \"" + tempPath + "\"";
+    string postHook = "mv \"" + tempPath + "\"/* \"" + outputPath + finalFolderPath + "\"/";
     #endif
 
     // download video
@@ -63,7 +70,7 @@ void downloader::start() {
         downloadCommand += " --sub-format best --sub-langs de.*,ger.*,en.*";
         downloadCommand += " --embed-subs --embed-thumbnail --embed-metadata --embed-chapters --write-info-json";
         downloadCommand += " -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4' -o \"";
-        downloadCommand += outFile + "\" -I " + to_string(setting.indexOverwrite) + "::1";
+        downloadCommand += tempOutFile + "\" -I " + to_string(setting.indexOverwrite) + "::1";
         downloadCommand += " --exec \'" + preHook + "\'";
         downloadCommand += " --exec \'" + postHook + "\'";
     } else if (setting.mediaType == "music" || setting.mediaType == "musicPlaylist") {
@@ -71,7 +78,7 @@ void downloader::start() {
         downloadCommand += " --parse-metadata \"playlist_autonumber:%(track_number)s\"";
         downloadCommand += " --add-metadata --embed-chapters";
         downloadCommand += " -f 'bestaudio[ext=m4a]/bestaudio[ext=aac]/bestaudio[ext=mp3]' -o \"";
-        downloadCommand += outFile + "\" -I " + to_string(setting.indexOverwrite) + "::1";
+        downloadCommand += tempOutFile + "\" -I " + to_string(setting.indexOverwrite) + "::1";
         downloadCommand += " --exec \'" + preHook + "\'";
         downloadCommand += " --exec \'" + postHook + "\'";
     } else if (setting.mediaType == "rss") {
@@ -79,7 +86,7 @@ void downloader::start() {
         downloadCommand += " --parse-metadata \"playlist_autonumber:%(track_number)s\"";
         downloadCommand += " --add-metadata --embed-chapters --playlist-reverse";
         downloadCommand += " -f 'bestaudio[ext=m4a]/bestaudio[ext=aac]/bestaudio[ext=mp3]' -o \"";
-        downloadCommand += outFile + "\" -I " + to_string(setting.indexOverwrite) + "::1";
+        downloadCommand += tempOutFile + "\" -I " + to_string(setting.indexOverwrite) + "::1";
         downloadCommand += " --exec \'" + preHook + "\'";
         downloadCommand += " --exec \'" + postHook + "\'";
     }
@@ -141,7 +148,7 @@ void downloader::start() {
         }
 
         if(line.find("[Exec]") != std::string::npos) {
-            cout << "== " << colors::cyan(line);
+            cout << "== " << line;
         }
 
         line.clear();
