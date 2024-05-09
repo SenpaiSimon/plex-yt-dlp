@@ -28,23 +28,8 @@ Please install the following packages before using this script:
 
 On Windows this script is meant to be run in the git-bash shell.
 
-# Installation
 
-You can install ffmpeg and python3-mutagen using the following commands:
-
-**Windows**
-```bash
-winget install -e --id Gyan.FFmpeg
-python3 -m pip install mutagen
-```
-
-**Linux**
-```bash
-sudo apt install ffmpeg
-sudo apt install python3-mutagen
-```
-
-# Usage
+# Pre-Setup
 
 ## Creating a YouTube Api-Key
 
@@ -122,4 +107,31 @@ ytdl.sh -u ulrHere -t music -io 10
 
 # Download a rss feed starting from index 10
 ytdl.sh -u ulrHere -t rss -io 10
+```
+
+
+# Building yourself
+
+## Cloning the Repo and sub-modules
+
+```bash
+git clone https://github.com/SenpaiSimon/plex-yt-dlp.git
+cd plex-yt-dlp
+git submodule update --init --recursive
+```
+
+## Install Build-Tools
+
+```bash
+sudo apt update
+sudo apt install cmake build-essentials libcurl4-openssl-dev -y
+```
+
+## Building
+
+```bash
+mkdir build
+cd build
+cmake ..
+make
 ```
