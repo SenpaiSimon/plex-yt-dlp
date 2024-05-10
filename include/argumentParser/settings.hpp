@@ -21,6 +21,9 @@ class settings
     public:
         bool showHelp;
         bool showVersion;
+        
+        bool list;
+        string linkList;
 
         string dlUrl;
         string mediaType;

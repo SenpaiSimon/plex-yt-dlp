@@ -30,25 +30,29 @@ using std::regex_search;
 
 namespace fs = std::filesystem;
 
+
 class tools {
     private:
         tools();
+        typedef enum binaryStatus {
+            MISSING,
+            FOUND,
+            EXECUTABLE
+        } binaryStatus_t;
         
     public:
         static bool fileExists(string filePath);
         static string getRequest(string req);
         // prints a line
         static void printLine();
-        // checks if a file is executable
-        static bool checkIfIsExecutable(const string& name);
-        // get the path of a command
-        static string getExecutablePath(const string& name);
         // execute command and get the output
         static string executeCommand(const string& command);
         // check all requirements for the project
         static void checkRequirements();
 
         static smatch getRegexMatches(string str, string pattern);
+
+        static binaryStatus_t checkBinaryStatus(string name);
 
         static void printHelp();
         static void printVersion();

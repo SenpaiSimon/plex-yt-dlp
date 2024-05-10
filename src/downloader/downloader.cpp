@@ -3,6 +3,11 @@
 downloader::downloader(settings setting, json conf) {
     this->setting = setting;
     this->conf = conf;
+    this->customFolder = "";
+}
+
+void downloader::setNewDlUrl(string url) {
+    this->setting.dlUrl = url;
 }
 
 void downloader::preStart() {
@@ -18,20 +23,24 @@ void downloader::start() {
     string outputPath = "";
     string tempOutFile = "";
     string tempPath = "";
-    string customFolder = "";
+
     if(setting.mediaType == "video") { // single video
         cout << "==" << endl;
-        cout << "== Enter " << colors::cyan("Folder Name") << ": ";
-        getline(cin, customFolder);
+        if(this->customFolder.empty()) {
+            cout << "== Enter " << colors::cyan("Folder Name") << ": ";
+            getline(cin, this->customFolder);
+        }
         outputPath = conf["videoPath"];
-        tempPath = string(conf["tempPath"]) + DEFAULT_VIDEO_PATH_PATTERN(customFolder); 
+        tempPath = string(conf["tempPath"]) + DEFAULT_VIDEO_PATH_PATTERN(this->customFolder); 
         tempOutFile =  tempPath + DEFAULT_VIDEO_FILE_NAME;
     } else if (setting.mediaType == "music") { // single music file
         cout << "==" << endl;
-        cout << "== Enter " << colors::cyan("Folder Name") << ": ";
-        getline(cin, customFolder);
+        if(this->customFolder.empty()) {
+            cout << "== Enter " << colors::cyan("Folder Name") << ": ";
+            getline(cin, this->customFolder);
+        } 
         outputPath = conf["musicPath"];
-        tempPath = string(conf["tempPath"]) + DEFAULT_MUSIC_PATH_PATTERN(customFolder);
+        tempPath = string(conf["tempPath"]) + DEFAULT_MUSIC_PATH_PATTERN(this->customFolder);
         tempOutFile =  tempPath + DEFAULT_MUSIC_FILE_NAME;
     } else if (setting.mediaType == "videoPlaylist") { // whole video playlist
         outputPath = conf["videoPath"];

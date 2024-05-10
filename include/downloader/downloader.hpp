@@ -22,10 +22,12 @@ class downloader {
     private:
         settings setting;
         json conf;
+        string customFolder;
 
         void preStart();
         void postStart();
     public:
+        void setNewDlUrl(string url);
         downloader(settings setting, json conf);
         void start();
 };

@@ -34,7 +34,17 @@ int main(int argc, char** argv){
 
     // start the downloader
     downloader dl(setting, conf);
-    dl.start();
+
+    if(setting.list) {
+        std::ifstream file(setting.linkList);
+        string curUrl;
+        while(std::getline(file, curUrl)) {
+            dl.setNewDlUrl(curUrl);
+            dl.start();
+        }
+    } else {
+        dl.start();
+    }
 
     return 0;
 }

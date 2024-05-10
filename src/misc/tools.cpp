@@ -8,24 +8,6 @@ bool tools::fileExists(string filePath) {
     return fs::exists(filePath);
 }
 
-bool tools::checkIfIsExecutable(const string& name) {
-    if (access(name.c_str(), X_OK) == -1) {
-        return false;
-    } else {
-        return true;
-    }
-}
-
-string tools::getExecutablePath(const string& name) {
-    #ifdef __WIN32
-    string command = "where " + name;
-    #else
-    string command = "which " + name;
-    #endif
-    string result = tools::executeCommand(command);
-    return result;
-}
-
 string tools::executeCommand(const string& command) {
     FILE *fp = popen(command.c_str(), "r");
     if(fp == NULL) {
@@ -41,6 +23,40 @@ string tools::executeCommand(const string& command) {
     }
     pclose(fp);
     return result;
+}
+
+tools::binaryStatus_t tools::checkBinaryStatus(string name) {
+    string commandRes = "";
+
+    // check if there and executable
+    #ifdef __WIN32
+    string command = "where " + name;
+    #else
+    string command = "which " + name;
+    #endif
+    commandRes = tools::executeCommand(command);
+
+    if(!commandRes.empty()) {
+        return EXECUTABLE;
+    } else {
+        // might be there but not executable, but only on linux lol
+        #ifdef __WIN32
+        return MISSING;
+        #else
+        command = "whereis " + name;
+        commandRes = tools::executeCommand(command);
+
+        // check the output
+        string toBeRemoved = name + ":";
+        commandRes = commandRes.erase(commandRes.find(toBeRemoved), toBeRemoved.length());
+
+        if(commandRes.empty()) {
+            return MISSING;
+        } else {
+            return FOUND;
+        }
+        #endif
+    }
 }
 
 string tools::getRequest(string req) {
@@ -70,6 +86,7 @@ string tools::getRequest(string req) {
 
 void tools::checkRequirements() {
     tools::printLine();
+    tools::binaryStatus lastStatus;
 
     bool missing = false;
 
@@ -77,18 +94,26 @@ void tools::checkRequirements() {
     cout << "==" << colors::boldCyan(" Cheching requirements...") << endl;
 
     cout << "==" << colors::cyan("\t- Searching yt-dlp");
-    string yt_dlp_path = tools::getExecutablePath("yt-dlp");
-    if(yt_dlp_path.empty()) {
+    lastStatus = tools::checkBinaryStatus("yt-dlp");
+
+    if(lastStatus != EXECUTABLE) {
         missing = true;
-        cout << colors::boldRed(" - missing!") << endl;
-        cout << "==\t  " << colors::red("-> Install from here: ") <<  "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp" << endl;
+        if(lastStatus == MISSING) {
+            cout << colors::boldRed(" - missing!") << endl;
+            cout << "==\t  " << colors::red("-> Install from here: ") <<  "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp" << endl;
+        } else if(lastStatus == FOUND) {
+            cout << colors::boldRed(" - found, but not executable!") << endl;
+            cout << "==\t  " << colors::red("-> Make it executable: ") <<  "chmod +x /path/to/your/bin/yt-dlp" << endl;
+        }
     } else {
         cout << colors::boldGreen(" - found!") << endl;
     }
 
+
     cout << "==" << colors::cyan("\t- Searching ffmpeg");
-    string ffmpeg_path = tools::getExecutablePath("ffmpeg");
-    if(ffmpeg_path.empty()) {
+    lastStatus = tools::checkBinaryStatus("ffmpeg");
+
+    if(lastStatus != EXECUTABLE) {
         missing = true;
         cout << colors::boldRed(" - missing!") << endl;
         #ifdef __WIN32
@@ -100,9 +125,10 @@ void tools::checkRequirements() {
         cout << colors::boldGreen(" - found!") << endl;
     }
 
+
     cout << "==" << colors::cyan("\t- Searching Curl");
-    string curl_path = tools::getExecutablePath("curl");
-    if(curl_path.empty()) {
+    lastStatus = tools::checkBinaryStatus("curl");
+    if(lastStatus != EXECUTABLE) {
         missing = true;
         cout << colors::boldRed(" - missing!") << endl;
     } else {
@@ -130,6 +156,9 @@ void tools::printHelp() {
     cout << "==" << endl;
     cout << "== -u, --url [urlHere]" << endl;
     cout << "==\tUrl to download" << endl;
+    cout << "==" << endl;
+    cout << "== -l, --links [pathToTxtFile]" << endl;
+    cout << "==\tFile with URLs/Playlists to be download" << endl;
     cout << "==" << endl;
     cout << "== -t, --type [mediaType]" << endl;
     cout << "==\tWhat output you want -- \"video\" or \"music\" or \"rss\"" << endl;

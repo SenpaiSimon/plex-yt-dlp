@@ -46,6 +46,13 @@ settings argumentParser::parse() {
             i++;
             continue;
         }
+
+        if(string(this->argValues[i]) == "--links" || string(this->argValues[i]) == "-l") {
+            this->setting.linkList = this->argValues[i + 1];
+            this->setting.list = true;
+            i++;
+            continue;
+        }
         
         tools::printLine();
         cout << "==" << endl;
@@ -69,7 +76,8 @@ void argumentParser::checkArguments() {
     string urlPattern = "((http|https)://)(www.)?[a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)";
     std::regex urlRegex(urlPattern);
 
-    if (std::regex_match(this->setting.dlUrl, urlRegex) != true) {
+    // list does not have this argument so its not needed
+    if (std::regex_match(this->setting.dlUrl, urlRegex) != true && setting.list == false) {
         tools::printLine();
         cout << "==" << endl;
         cout << "==" <<colors::boldRed(" Error: Invalid URL") << endl;

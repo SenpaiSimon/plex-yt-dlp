@@ -3,6 +3,8 @@
 settings::settings() {
     this->showHelp = false;
     this->showVersion = false;
+    this->list = false;
+    this->linkList = "";
     this->dlUrl = "defaultUrl";
     this->mediaType = "defaultMedia";
     this->indexOverwrite = -1;
