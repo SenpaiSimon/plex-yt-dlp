@@ -56,42 +56,48 @@ void downloader::start() {
     string finalFolderPath = finalFilePath.erase(finalFilePath.find_last_of("/"), finalFilePath.length() - finalFilePath.find_last_of("/"));
 
     #ifdef __WIN32 // TODO command for windows
-    string preHook = "mkdir -p \"" + outputPath + finalFolderPath + "\"";
-    string postHook = "mv \"" + tempPath + "\"/* \"" + outputPath + finalFolderPath + "\"";
+    tempPath.append("//");
+    string preHook = "\"xcopy /y \"\"" + tempPath + "\"\"\"\" \"\"" + outputPath + finalFolderPath + "\\\\\"\"\"\"\"";
+    std::replace(preHook.begin(), preHook.end(), '/', '\\');
+    preHook = std::regex_replace(preHook, std::regex("\\\\y"), "/y", std::regex_constants::format_first_only);
+    string postHook = "\"rmdir /s /q \"\"" + tempPath + "\"\"\"";
+    std::replace(postHook.begin(), postHook.end(), '/', '\\');
+    postHook = std::regex_replace(postHook, std::regex("\\\\s"), "/s", std::regex_constants::format_first_only);
+    postHook = std::regex_replace(postHook, std::regex("\\\\q"), "/q", std::regex_constants::format_first_only);
     #else
-    string preHook = "mkdir -p \"" + outputPath + finalFolderPath + "\"";
-    string cdHook = "cd \"" + tempPath + "\"";
-    string postHook = "mv \"" + tempPath + "\"/* \"" + outputPath + finalFolderPath + "\"/";
+    string preHook = "\'mkdir -p \"" + outputPath + finalFolderPath + "\"\'";
+    string postHook = "\'mv \"" + tempPath + "\"/* \"" + outputPath + finalFolderPath + "\"/\'";
     #endif
 
     // download video
-    string downloadCommand = "yt-dlp " + setting.dlUrl;
+    string downloadCommand = "yt-dlp \"" + setting.dlUrl + "\"";
     if(setting.mediaType == "video" || setting.mediaType == "videoPlaylist") { 
         downloadCommand += " --sub-format best --sub-langs de.*,ger.*,en.*";
         downloadCommand += " --embed-subs --embed-thumbnail --embed-metadata --embed-chapters --write-info-json";
-        downloadCommand += " -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4' -o \"";
+        downloadCommand += " -f \"bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4\" -o \"";
         downloadCommand += tempOutFile + "\" -I " + to_string(setting.indexOverwrite) + "::1";
-        downloadCommand += " --exec \'" + preHook + "\'";
-        downloadCommand += " --exec \'" + postHook + "\'";
+        downloadCommand += " --exec " + preHook;
+        downloadCommand += " --exec " + postHook;
     } else if (setting.mediaType == "music" || setting.mediaType == "musicPlaylist") {
         downloadCommand += " --embed-thumbnail --embed-metadata";
         downloadCommand += " --parse-metadata \"playlist_autonumber:%(track_number)s\"";
         downloadCommand += " --parse-metadata \"playlist_title:%(album)s\"";
         downloadCommand += " --add-metadata --embed-chapters";
-        downloadCommand += " -f 'bestaudio[ext=m4a]/bestaudio[ext=aac]/bestaudio[ext=mp3]' -o \"";
+        downloadCommand += " -f \"bestaudio[ext=m4a]/bestaudio[ext=aac]/bestaudio[ext=mp3]\" -o \"";
         downloadCommand += tempOutFile + "\" -I " + to_string(setting.indexOverwrite) + "::1";
-        downloadCommand += " --exec \'" + preHook + "\'";
-        downloadCommand += " --exec \'" + postHook + "\'";
+        downloadCommand += " --exec " + preHook;
+        downloadCommand += " --exec " + postHook;
     } else if (setting.mediaType == "rss") {
         downloadCommand += " --embed-thumbnail --embed-metadata";
         downloadCommand += " --parse-metadata \"playlist_autonumber:%(track_number)s\"";
         downloadCommand += " --add-metadata --embed-chapters --playlist-reverse";
-        downloadCommand += " -f 'bestaudio[ext=m4a]/bestaudio[ext=aac]/bestaudio[ext=mp3]' -o \"";
+        downloadCommand += " -f \"bestaudio[ext=m4a]/bestaudio[ext=aac]/bestaudio[ext=mp3]\" -o \"";
         downloadCommand += tempOutFile + "\" -I 1:" + to_string(setting.indexOverwrite) + ":1";
-        downloadCommand += " --exec \'" + preHook + "\'";
-        downloadCommand += " --exec \'" + postHook + "\'";
+        downloadCommand += " --exec " + preHook;
+        downloadCommand += " --exec " + postHook;
     }
 
+    cout << downloadCommand << endl;
     // print info before the command call
     cout << "=="     << endl;
     cout << "== "    << colors::boldCyan("Starting Download...") << endl;
@@ -107,7 +113,6 @@ void downloader::start() {
 
     // actual command call
     cout << "==" << endl;
-
     // Open pipe to file and call the command
     downloadCommand.append(" 2>&1"); // redirect output
     FILE* pipe = popen(downloadCommand.c_str(), "r");
@@ -133,24 +138,25 @@ void downloader::start() {
             }
         }
 
+        cout << line;
         // act on certain strings in the output of the command
-        if(line.find("[download]") != std::string::npos) {
-            if(line.find("\% of") != std::string::npos) {
-                cout << "== " << colors::cyan(line);
-            } else {
-                if(line.find("Downloading item") != std::string::npos) {
-                    cout << "==" << endl;
-                    cout << "==" << endl;
-                    cout << "== " << colors::boldGreen(line);
-                } else {
-                    cout << "== " << line;
-                }
-            }
-        }
+        // if(line.find("[download]") != std::string::npos) {
+        //     if(line.find("\% of") != std::string::npos) {
+        //         cout << "== " << colors::cyan(line);
+        //     } else {
+        //         if(line.find("Downloading item") != std::string::npos) {
+        //             cout << "==" << endl;
+        //             cout << "==" << endl;
+        //             cout << "== " << colors::boldGreen(line);
+        //         } else {
+        //             cout << "== " << line;
+        //         }
+        //     }
+        // }
 
-        if(line.find("[Exec]") != std::string::npos) {
-            cout << "== " << line;
-        }
+        // if(line.find("[Exec]") != std::string::npos) {
+        //     cout << "== " << line;
+        // }
 
         line.clear();
     }

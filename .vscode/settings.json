@@ -61,6 +61,18 @@
         "valarray": "cpp",
         "variant": "cpp",
         "ratio": "cpp",
-        "format": "cpp"
+        "format": "cpp",
+        "any": "cpp",
+        "bitset": "cpp",
+        "charconv": "cpp",
+        "condition_variable": "cpp",
+        "csignal": "cpp",
+        "regex": "cpp",
+        "fstream": "cpp",
+        "mutex": "cpp",
+        "semaphore": "cpp",
+        "stop_token": "cpp",
+        "thread": "cpp",
+        "cinttypes": "cpp"
     }
 }
