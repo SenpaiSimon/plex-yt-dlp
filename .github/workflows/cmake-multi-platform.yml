@@ -50,6 +50,9 @@ jobs:
 
     - name: Init Submodules
       run: git submodule update --init --recursive
+               
+    - name: Install ninja-build tool
+      uses: seanmiddleditch/gha-setup-ninja@v4
       
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
