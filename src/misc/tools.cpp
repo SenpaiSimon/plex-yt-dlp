@@ -36,7 +36,9 @@ string tools::executeCommand(const string& command) {
     while(fgets(buffer, sizeof(buffer), fp) != NULL) {
         result += buffer;
     }
-    result.erase(result.find("\n"), 1);
+    if(!result.empty()) {
+        result.erase(result.find("\n"), 1);
+    }
     pclose(fp);
     return result;
 }
@@ -76,7 +78,7 @@ void tools::checkRequirements() {
 
     cout << "==" << colors::cyan("\t- Searching yt-dlp");
     string yt_dlp_path = tools::getExecutablePath("yt-dlp");
-    if(yt_dlp_path == "") {
+    if(yt_dlp_path.empty()) {
         missing = true;
         cout << colors::boldRed(" - missing!") << endl;
         cout << "==\t  " << colors::red("-> Install from here: ") <<  "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp" << endl;
@@ -86,7 +88,7 @@ void tools::checkRequirements() {
 
     cout << "==" << colors::cyan("\t- Searching ffmpeg");
     string ffmpeg_path = tools::getExecutablePath("ffmpeg");
-    if(ffmpeg_path == "") {
+    if(ffmpeg_path.empty()) {
         missing = true;
         cout << colors::boldRed(" - missing!") << endl;
         #ifdef __WIN32
@@ -100,7 +102,7 @@ void tools::checkRequirements() {
 
     cout << "==" << colors::cyan("\t- Searching Curl");
     string curl_path = tools::getExecutablePath("curl");
-    if(curl_path == "") {
+    if(curl_path.empty()) {
         missing = true;
         cout << colors::boldRed(" - missing!") << endl;
     } else {
