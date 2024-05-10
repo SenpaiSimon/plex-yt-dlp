@@ -27,7 +27,7 @@ jobs:
           - os: windows-latest
             c_compiler: gcc
             cpp_compiler: g++
-            makeFileType: "MinGW Makefiles"
+            makeFileType: "Ninja"
             curllibCommand: curl -o curl.zip https://curl.se/windows/dl-8.7.1_7/curl-8.7.1_7-win64-mingw.zip && mkdir curlLib && tar -xf curl.zip -C curlLib --strip-components=1 && mv curlLib\lib 'C:\Program Files\'&& mv curlLib\include 'C:\Program Files\'
           - os: ubuntu-latest
             c_compiler: gcc
