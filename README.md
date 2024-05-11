@@ -75,6 +75,9 @@ This will print something like:
 == -u, --url [urlHere]
 ==      Url to download
 ==
+== -l, --links [pathToTxtFile]
+==      File with URLs/Playlists to be download
+==
 == -t, --type [mediaType]
 ==      What output you want -- "video" or "music" or "rss"
 ==

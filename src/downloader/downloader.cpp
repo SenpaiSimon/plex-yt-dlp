@@ -23,6 +23,7 @@ void downloader::start() {
     string outputPath = "";
     string tempOutFile = "";
     string tempPath = "";
+    string rssArtistName = "";
 
     if(setting.mediaType == "video") { // single video
         cout << "==" << endl;
@@ -51,6 +52,9 @@ void downloader::start() {
         tempPath = string(conf["tempPath"]) + DEFAULT_MUSIC_PLAYLIST_PATH_PATTERN; 
         tempOutFile = tempPath + DEFAULT_MUSIC_PLAYLIST_FILE_NAME;
     } else if (setting.mediaType == "rss") { // single rss feed
+        cout << "==" << endl;
+        cout << "== Enter " << colors::cyan("Artist Name") << ": ";
+        getline(cin, rssArtistName);
         outputPath = conf["rssPath"];
         tempPath = string(conf["tempPath"]) + DEFAULT_RSS_PLAYLIST_PATH_PATTERN; 
         tempOutFile = tempPath + DEFAULT_RSS_PLAYLIST_FILE_NAME;
@@ -99,6 +103,8 @@ void downloader::start() {
     } else if (setting.mediaType == "rss") {
         downloadCommand += " --embed-thumbnail --embed-metadata";
         downloadCommand += " --parse-metadata \"playlist_autonumber:%(track_number)s\"";
+        downloadCommand += " --parse-metadata \"playlist_autonumber:%(artist)s\"";
+        downloadCommand += " --replace-in-metadata \"artist\" \"\\d+\" \"" + rssArtistName +"\"";
         downloadCommand += " --add-metadata --embed-chapters --playlist-reverse";
         downloadCommand += " -f \"bestaudio[ext=m4a]/bestaudio[ext=aac]/bestaudio[ext=mp3]\" -o \"";
         downloadCommand += tempOutFile + "\" -I 1:" + to_string(setting.indexOverwrite) + ":1";
