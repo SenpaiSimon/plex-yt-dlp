@@ -62,7 +62,7 @@ Just use `plex-yt-dlp -h` or `plex-yt-dl --help` for the help screen.
 This will print something like:
 
 ```text
-=================================================================
+==========================================================================================================
 ==
 == plex-yt-dlp [OPTIONS]
 ==
@@ -81,13 +81,16 @@ This will print something like:
 == -t, --type [mediaType]
 ==      What output you want -- "video" or "music" or "rss"
 ==
+== -r, --reverse
+==      Reverse the order of the given playlist or rss feed
+==
 == -io, --indexOverwrite [num] -- optional
 ==      Overwrite the playlist index
 ==
 == -ido, --idOverwrite [num] -- optional
 ==      Overwrite the auto ID
 ==
-=================================================================
+==========================================================================================================
 ```
 
 ## Examples
@@ -132,9 +135,18 @@ sudo apt install cmake build-essentials libcurl4-openssl-dev -y
 
 ## Building
 
+Linux:
 ```bash
 mkdir build
 cd build
 cmake ..
 make
+```
+
+Windows:
+```bash
+mkdir build
+cd build
+cmake ..
+cmake --build .
 ```

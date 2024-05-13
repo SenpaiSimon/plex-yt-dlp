@@ -25,6 +25,7 @@ void downloader::start() {
     string tempPath = "";
     string rssArtistName = "";
 
+    // TODO check for missing artist or album and prompt user
     if(setting.mediaType == "video") { // single video
         cout << "==" << endl;
         if(this->customFolder.empty()) {
@@ -103,13 +104,18 @@ void downloader::start() {
     } else if (setting.mediaType == "rss") {
         downloadCommand += " --embed-thumbnail --embed-metadata";
         downloadCommand += " --parse-metadata \"playlist_autonumber:%(track_number)s\"";
+        downloadCommand += " --parse-metadata \"playlist_title:%(album)s\"";
         downloadCommand += " --parse-metadata \"playlist_autonumber:%(artist)s\"";
         downloadCommand += " --replace-in-metadata \"artist\" \"\\d+\" \"" + rssArtistName +"\"";
-        downloadCommand += " --add-metadata --embed-chapters --playlist-reverse";
+        downloadCommand += " --add-metadata --embed-chapters";
         downloadCommand += " -f \"bestaudio[ext=m4a]/bestaudio[ext=aac]/bestaudio[ext=mp3]\" -o \"";
         downloadCommand += tempOutFile + "\" -I 1:" + to_string(setting.indexOverwrite) + ":1";
         downloadCommand += " --exec " + preHook;
         downloadCommand += " --exec " + postHook;
+    }
+
+    if(this->setting.reverse == true) {
+        downloadCommand += " --playlist-reverse";
     }
 
     // print info before the command call

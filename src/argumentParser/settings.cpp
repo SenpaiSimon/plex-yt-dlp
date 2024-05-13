@@ -9,6 +9,9 @@ settings::settings() {
     this->mediaType = "defaultMedia";
     this->indexOverwrite = -1;
     this->idOverwrite = -1;
+    this->reverse = false;
+    this->album = "";
+    this->artist = "";
 
     char cCurrentPath[FILENAME_MAX];
     if (GetCurrentDir(cCurrentPath, sizeof(cCurrentPath))) {

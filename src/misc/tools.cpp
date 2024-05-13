@@ -163,6 +163,9 @@ void tools::printHelp() {
     cout << "== -t, --type [mediaType]" << endl;
     cout << "==\tWhat output you want -- \"video\" or \"music\" or \"rss\"" << endl;
     cout << "==" << endl;
+    cout << "== -r, --reverse" << endl;
+    cout << "==\tReverse the order of the given playlist or rss feed" << endl;
+    cout << "==" << endl;
     cout << "== -io, --indexOverwrite [num] -- optional" << endl;
     cout << "==\tOverwrite the playlist index" << endl;
     cout << "==" << endl;

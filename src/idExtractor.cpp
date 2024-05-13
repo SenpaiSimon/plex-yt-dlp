@@ -28,7 +28,7 @@ void idExtractor::extractData() {
     int episodeCount = 0;
     int id = 0;
 
-    // setup paths and names
+    // setup paths and names -- todo fill in artist and album
     if(setting->mediaType == "videoPlaylist") {
         // this path is without a ending slash /
         playlistPath = string(conf["videoPath"]) + tools::executeCommand(YT_DLP_PARSE_PATH(DEFAULT_VIDEO_PLAYLIST_PATH_PATTERN, setting->dlUrl));

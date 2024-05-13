@@ -53,6 +53,11 @@ settings argumentParser::parse() {
             i++;
             continue;
         }
+
+        if(string(this->argValues[i]) == "--reverse" || string(this->argValues[i]) == "-r") {
+            this->setting.reverse = true;
+            continue;
+        }
         
         tools::printLine();
         cout << "==" << endl;

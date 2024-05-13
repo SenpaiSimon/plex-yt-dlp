@@ -31,6 +31,11 @@ class settings
         int indexOverwrite;
         int idOverwrite;
 
+        bool reverse;
+
+        string album;
+        string artist;
+
         string cwd;
 
         settings();
