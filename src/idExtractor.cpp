@@ -66,11 +66,11 @@ void idExtractor::extractData() {
         }
 
         if(setting->indexOverwrite == -1) {
-            // its +1 because we want the next one to be downloaded
-            if(setting->mediaType == "rss") {
-                // because rss feeds are inverted
+            if(setting->reverse == true) {
+                // if its reverse, index from the back
                 setting->indexOverwrite = std::stoi(playlistCount) - episodeCount;
             } else {
+                // its +1 because we want the next one to be downloaded
                 setting->indexOverwrite = episodeCount + 1;
             }
         }
@@ -111,9 +111,10 @@ void idExtractor::extractData() {
     // its a new playlist from an existing channel
     if(fs::exists(channelPath)) {
         cout << "==\t" << colors::cyan("- Found new Playlist from existing Channel");
-        // since its a new playlist it can be set to 1
+
+        // if its reverse we have to index from the back
         if(setting->indexOverwrite == -1) {
-            if(setting->mediaType == "rss") {
+            if(setting->reverse == true) {
                 setting->indexOverwrite = std::stoi(playlistCount);
             } else {
                 setting->indexOverwrite = 1;
@@ -146,13 +147,16 @@ void idExtractor::extractData() {
     if(setting->idOverwrite == -1) {
         setting->idOverwrite = 1;
     }
+
+    // if its reverse we have to index from the back
     if(setting->indexOverwrite == -1) {
-        if(setting->mediaType == "rss") {
+        if(setting->reverse == true) {
             setting->indexOverwrite = std::stoi(playlistCount);
         } else {
             setting->indexOverwrite = 1;
         }
     }
+
     cout << colors::boldGreen(" - done") << endl;
     cout << "==" << endl;
     tools::printLine();

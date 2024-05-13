@@ -88,8 +88,7 @@ void downloader::start() {
     if(setting.mediaType == "video" || setting.mediaType == "videoPlaylist") { 
         downloadCommand += " --sub-format best --sub-langs de.*,ger.*,en.*";
         downloadCommand += " --embed-subs --embed-thumbnail --embed-metadata --embed-chapters --write-info-json";
-        downloadCommand += " -f \"bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4\" -o \"";
-        downloadCommand += tempOutFile + "\" -I " + to_string(setting.indexOverwrite) + "::1";
+        downloadCommand += " -f \"bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4\" -o \"" + tempOutFile + "\"";
         downloadCommand += " --exec " + preHook;
         downloadCommand += " --exec " + postHook;
     } else if (setting.mediaType == "music" || setting.mediaType == "musicPlaylist") {
@@ -97,8 +96,7 @@ void downloader::start() {
         downloadCommand += " --parse-metadata \"playlist_autonumber:%(track_number)s\"";
         downloadCommand += " --parse-metadata \"playlist_title:%(album)s\"";
         downloadCommand += " --add-metadata --embed-chapters";
-        downloadCommand += " -f \"bestaudio[ext=m4a]/bestaudio[ext=aac]/bestaudio[ext=mp3]\" -o \"";
-        downloadCommand += tempOutFile + "\" -I " + to_string(setting.indexOverwrite) + "::1";
+        downloadCommand += " -f \"bestaudio[ext=m4a]/bestaudio[ext=aac]/bestaudio[ext=mp3]\" -o \"" + tempOutFile + "\"";
         downloadCommand += " --exec " + preHook;
         downloadCommand += " --exec " + postHook;
     } else if (setting.mediaType == "rss") {
@@ -108,14 +106,18 @@ void downloader::start() {
         downloadCommand += " --parse-metadata \"playlist_autonumber:%(artist)s\"";
         downloadCommand += " --replace-in-metadata \"artist\" \"\\d+\" \"" + rssArtistName +"\"";
         downloadCommand += " --add-metadata --embed-chapters";
-        downloadCommand += " -f \"bestaudio[ext=m4a]/bestaudio[ext=aac]/bestaudio[ext=mp3]\" -o \"";
-        downloadCommand += tempOutFile + "\" -I 1:" + to_string(setting.indexOverwrite) + ":1";
+        downloadCommand += " -f \"bestaudio[ext=m4a]/bestaudio[ext=aac]/bestaudio[ext=mp3]\" -o \"" + tempOutFile + "\"";
         downloadCommand += " --exec " + preHook;
         downloadCommand += " --exec " + postHook;
     }
 
     if(this->setting.reverse == true) {
         downloadCommand += " --playlist-reverse";
+        // reversed indexing
+        downloadCommand += " -I 1:" + to_string(setting.indexOverwrite) + ":1";
+    } else {
+        // normal indexing
+        downloadCommand += " -I " + to_string(setting.indexOverwrite) + "::1";
     }
 
     // print info before the command call
