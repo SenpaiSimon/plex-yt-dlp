@@ -130,7 +130,7 @@ git submodule update --init --recursive
 
 ```bash
 sudo apt update
-sudo apt install cmake build-essentials libcurl4-openssl-dev -y
+sudo apt install cmake build-essential libcurl4-openssl-dev -y
 ```
 
 ## Building
