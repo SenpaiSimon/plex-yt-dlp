@@ -85,20 +85,19 @@ void downloader::start() {
 
     // download video
     string downloadCommand = "yt-dlp \"" + setting.dlUrl + "\"";
+    downloadCommand += " --exec " + preHook;
+    downloadCommand += " --exec " + postHook;
+
     if(setting.mediaType == "video" || setting.mediaType == "videoPlaylist") { 
         downloadCommand += " --sub-format best --sub-langs de.*,ger.*,en.*";
-        downloadCommand += " --embed-subs --embed-thumbnail --embed-metadata --embed-chapters --write-info-json";
+        downloadCommand += " --embed-subs --embed-thumbnail --embed-metadata --embed-chapters --write-info-json --write-thumbnail";
         downloadCommand += " -f \"bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4\" -o \"" + tempOutFile + "\"";
-        downloadCommand += " --exec " + preHook;
-        downloadCommand += " --exec " + postHook;
     } else if (setting.mediaType == "music" || setting.mediaType == "musicPlaylist") {
         downloadCommand += " --embed-thumbnail --embed-metadata";
         downloadCommand += " --parse-metadata \"playlist_autonumber:%(track_number)s\"";
         downloadCommand += " --parse-metadata \"playlist_title:%(album)s\"";
         downloadCommand += " --add-metadata --embed-chapters";
         downloadCommand += " -f \"bestaudio[ext=m4a]/bestaudio[ext=aac]/bestaudio[ext=mp3]\" -o \"" + tempOutFile + "\"";
-        downloadCommand += " --exec " + preHook;
-        downloadCommand += " --exec " + postHook;
     } else if (setting.mediaType == "rss") {
         downloadCommand += " --embed-thumbnail --embed-metadata";
         downloadCommand += " --parse-metadata \"playlist_autonumber:%(track_number)s\"";
@@ -107,8 +106,6 @@ void downloader::start() {
         downloadCommand += " --replace-in-metadata \"artist\" \"\\d+\" \"" + rssArtistName +"\"";
         downloadCommand += " --add-metadata --embed-chapters";
         downloadCommand += " -f \"bestaudio[ext=m4a]/bestaudio[ext=aac]/bestaudio[ext=mp3]\" -o \"" + tempOutFile + "\"";
-        downloadCommand += " --exec " + preHook;
-        downloadCommand += " --exec " + postHook;
     }
 
     if(this->setting.reverse == true) {

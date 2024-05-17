@@ -60,7 +60,10 @@ void idExtractor::extractData() {
         // this can run for videosPlaylist, musicPlaylist and also RSS
         for (const auto& entry : std::filesystem::directory_iterator(playlistPath)) {
             // skip the info files
-            if(entry.path().extension() != ".json" && entry.path().extension() != ".info.json" && entry.path().extension() != ".info") { 
+            if(entry.path().extension() == ".mp4" || \
+               entry.path().extension() == ".m4a" || \
+               entry.path().extension() == ".mp3" || \
+               entry.path().extension() == ".aac") { 
                 episodeCount++;
             }
         }
