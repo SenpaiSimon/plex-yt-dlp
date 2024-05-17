@@ -90,7 +90,8 @@ void downloader::start() {
 
     if(setting.mediaType == "video" || setting.mediaType == "videoPlaylist") { 
         downloadCommand += " --sub-format best --sub-langs de.*,ger.*,en.*";
-        downloadCommand += " --embed-subs --embed-thumbnail --embed-metadata --embed-chapters --write-info-json --write-thumbnail";
+        downloadCommand += " --embed-subs --embed-thumbnail --embed-metadata --embed-chapters --write-info-json";
+        downloadCommand += " --write-thumbnail --convert-thumbnails jpg";
         downloadCommand += " -f \"bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4\" -o \"" + tempOutFile + "\"";
     } else if (setting.mediaType == "music" || setting.mediaType == "musicPlaylist") {
         downloadCommand += " --embed-thumbnail --embed-metadata";
