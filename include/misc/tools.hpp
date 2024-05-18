@@ -13,8 +13,10 @@
 #include <curl_form.h>
 #include <curl_ios.h>
 #include <curl_exception.h>
+#include <unordered_set>
 
 using std::string;
+using std::unordered_set;
 using std::cout;
 using std::endl;
 using std::ostringstream;
@@ -43,6 +45,7 @@ class tools {
     public:
         static bool fileExists(string filePath);
         static string getRequest(string req);
+        static string escapePath(const string& path);
         // prints a line
         static void printLine();
         // execute command and get the output

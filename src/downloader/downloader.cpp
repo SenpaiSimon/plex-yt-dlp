@@ -62,25 +62,24 @@ void downloader::start() {
     }
 
     // post command hook
-    string finalFilePath = tempOutFile;
-    // first remove the ./temp dir prefix
+    string finalOutputPath = tempPath;
     string toBeRemoved = string(conf["tempPath"]);
-    finalFilePath = finalFilePath.erase(finalFilePath.find(toBeRemoved), toBeRemoved.length());
-    // then remove the file name
-    string finalFolderPath = finalFilePath.erase(finalFilePath.find_last_of("/"), finalFilePath.length() - finalFilePath.find_last_of("/"));
+    finalOutputPath = outputPath + finalOutputPath.erase(finalOutputPath.find(toBeRemoved), toBeRemoved.length());
 
-    #ifdef __WIN32 // TODO command for windows
-    tempPath.append("//");
-    string preHook = "\"xcopy /y \"\"" + tempPath + "\"\"\"\" \"\"" + outputPath + finalFolderPath + "\\\\\"\"\"\"\"";
-    std::replace(preHook.begin(), preHook.end(), '/', '\\');
-    preHook = std::regex_replace(preHook, std::regex("\\\\y"), "/y", std::regex_constants::format_first_only);
-    string postHook = "\"rmdir /s /q \"\"" + tempPath + "\"\"\"";
-    std::replace(postHook.begin(), postHook.end(), '/', '\\');
-    postHook = std::regex_replace(postHook, std::regex("\\\\s"), "/s", std::regex_constants::format_first_only);
-    postHook = std::regex_replace(postHook, std::regex("\\\\q"), "/q", std::regex_constants::format_first_only);
+    #ifdef __WIN32 
+    // convert needed paths to windows backslash bs
+    string tempFolder = string(conf["tempPath"]);
+    std::replace(tempFolder.begin(), tempFolder.end(), '/', '\\');
+
+    string destFolder = outputPath; 
+    std::replace(destFolder.begin(), destFolder.end(), '/', '\\');
+
+    // workaground with echo at the end because yt-dlp keeps appending stupid shit at the end
+    string preHook = "\"xcopy /s /y \"\""+ tempFolder + "\"\"\"\" \"\"" + destFolder + "\"\"\"\" && echo \"";
+    string postHook = "\"rmdir /s /q \"\"" + tempFolder + "\"\"\"\" && echo \"";
     #else
-    string preHook = "\'mkdir -p \"" + outputPath + finalFolderPath + "\"\'";
-    string postHook = "\'mv \"" + tempPath + "\"/* \"" + outputPath + finalFolderPath + "\"/\'";
+    string preHook = "\'mkdir -p \"" + finalOutputPath + "\"\'";
+    string postHook = "\'mv \"" + tempPath + "\"/* \"" + finalOutputPath + "\"/\'";
     #endif
 
     // download video
@@ -157,25 +156,25 @@ void downloader::start() {
                 break;
             }
         }
-
+        cout << line;
         // act on certain strings in the output of the command
-        if(line.find("[download]") != std::string::npos) {
-            if(line.find("\% of") != std::string::npos) {
-                cout << "== " << colors::cyan(line);
-            } else {
-                if(line.find("Downloading item") != std::string::npos) {
-                    cout << "==" << endl;
-                    cout << "==" << endl;
-                    cout << "== " << colors::boldGreen(line);
-                } else {
-                    cout << "== " << line;
-                }
-            }
-        }
+        // if(line.find("[download]") != std::string::npos) {
+        //     if(line.find("\% of") != std::string::npos) {
+        //         cout << "== " << colors::cyan(line);
+        //     } else {
+        //         if(line.find("Downloading item") != std::string::npos) {
+        //             cout << "==" << endl;
+        //             cout << "==" << endl;
+        //             cout << "== " << colors::boldGreen(line);
+        //         } else {
+        //             cout << "== " << line;
+        //         }
+        //     }
+        // }
 
-        if(line.find("[Exec]") != std::string::npos) {
-            cout << "== " << line;
-        }
+        // if(line.find("[Exec]") != std::string::npos) {
+        //     cout << "== " << line;
+        // }
 
         line.clear();
     }

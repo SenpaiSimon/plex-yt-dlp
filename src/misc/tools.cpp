@@ -8,6 +8,25 @@ bool tools::fileExists(string filePath) {
     return fs::exists(filePath);
 }
 
+string escapePath(const string& path) {
+    #ifdef _WIN32
+    const char escapeChar = '^';
+    #else
+    const char escapeChar = '\\';
+    #endif
+    // Define a set of characters that need escaping
+    unordered_set<char> escapeSet = {' ', '\t', '\n', '\r', '\\'};
+
+    string escapedPath;
+    for (char c : path) {
+    if (escapeSet.count(c) > 0) {
+        escapedPath += escapeChar;
+    }
+    escapedPath += c;
+    }
+    return escapedPath;
+}
+
 string tools::executeCommand(const string& command) {
     FILE *fp = popen(command.c_str(), "r");
     if(fp == NULL) {
