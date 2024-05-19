@@ -50,7 +50,7 @@ endif()
 
 # Libraries
 target_link_libraries(${PROJECT_NAME}
-    # ${CURL_LIBRARY}
+    curl
     curlcpp
     nlohmann_json::nlohmann_json 
 )
