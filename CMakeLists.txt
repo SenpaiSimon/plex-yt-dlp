@@ -30,6 +30,11 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
     CUR_VERSION="1.2"
 )
 
+# c++ standard
+set_property(TARGET ${PROJECT_NAME}
+    PROPERTY CXX_STANDARD 17
+)
+
 if(MSVC)
     add_compile_definitions(_WIN32)
 endif()
