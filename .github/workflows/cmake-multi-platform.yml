@@ -34,7 +34,7 @@ jobs:
             cpp_compiler: cl
             # makeFileType: "Ninja"
             # curllibCommand: curl -o curl.zip https://curl.se/windows/dl-8.7.1_7/curl-8.7.1_7-win64-mingw.zip && mkdir curlLib && tar -xf curl.zip -C curlLib --strip-components=1 && mv curlLib\lib 'C:\Program Files\'&& mv curlLib\include 'C:\Program Files\'
-            curllibCommand: ${{ github.workspace }}/vcpkg/vcpkg install curl[tool]
+            curllibCommand: vcpkg integrade install && vcpkg install curl[tool]
           - os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
@@ -44,6 +44,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: ilammy/msvc-dev-cmd@v1
+    - uses: friendlyanon/setup-vcpkg@v1
 
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
