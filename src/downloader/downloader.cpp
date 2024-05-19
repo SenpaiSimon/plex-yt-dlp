@@ -65,7 +65,7 @@ void downloader::start() {
     string tempFolder = string(conf["tempPath"]);
     string destFolder = outputPath; 
 
-    #ifdef __WIN32 
+    #ifdef _WIN32 
     // convert needed paths to windows backslash bs
     std::replace(tempFolder.begin(), tempFolder.end(), '/', '\\');
     std::replace(destFolder.begin(), destFolder.end(), '/', '\\');
@@ -81,7 +81,7 @@ void downloader::start() {
     // download video
     string downloadCommand = "yt-dlp \"" + setting.dlUrl + "\"";
 
-    #ifdef __WIN32
+    #ifdef _WIN32
     // only windows needs a pre hook
     downloadCommand += " --exec " + preHook;
     #endif

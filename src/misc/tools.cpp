@@ -48,7 +48,7 @@ tools::binaryStatus_t tools::checkBinaryStatus(string name) {
     string commandRes = "";
 
     // check if there and executable
-    #ifdef __WIN32
+    #ifdef _WIN32
     string command = "where " + name;
     #else
     string command = "which " + name;
@@ -59,7 +59,7 @@ tools::binaryStatus_t tools::checkBinaryStatus(string name) {
         return EXECUTABLE;
     } else {
         // might be there but not executable, but only on linux lol
-        #ifdef __WIN32
+        #ifdef _WIN32
         return MISSING;
         #else
         command = "whereis " + name;
@@ -135,7 +135,7 @@ void tools::checkRequirements() {
     if(lastStatus != EXECUTABLE) {
         missing = true;
         cout << colors::boldRed(" - missing!") << endl;
-        #ifdef __WIN32
+        #ifdef _WIN32
         cout << "==\t  " << colors::red("-> Install with command: ") << "winget install -e --id Gyan.FFmpeg" << endl;
         #else
         cout << "==\t  " << colors::red("-> Install with command: ") << "sudo apt install ffmpeg" << endl;
@@ -144,7 +144,7 @@ void tools::checkRequirements() {
         cout << colors::boldGreen(" - found!") << endl;
     }
 
-    #ifndef __WIN32
+    #ifndef _WIN32
     cout << "==" << colors::cyan("\t- Searching rsync");
     lastStatus = tools::checkBinaryStatus("rsync");
 

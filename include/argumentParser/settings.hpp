@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 #include <stdio.h>  /* defines FILENAME_MAX */
-#ifdef __WIN32
+#ifdef _WIN32
     #include <direct.h>
     #define GetCurrentDir _getcwd
 #else
