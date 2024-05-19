@@ -33,11 +33,13 @@ jobs:
             c_compiler: cl
             cpp_compiler: cl
             makeFileType: "Ninja"
+            additionalDefine: "_WIN32"
             curllibCommand: curl -o curl.zip https://curl.se/windows/dl-8.7.1_7/curl-8.7.1_7-win64-mingw.zip && mkdir curlLib && tar -xf curl.zip -C curlLib --strip-components=1 && mv curlLib\lib 'C:\Program Files\'&& mv curlLib\include 'C:\Program Files\'
           - os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
             makeFileType: "Unix Makefiles"
+            additionalDefine: "__linux__"
             curllibCommand: sudo apt update && sudo apt install curl && sudo apt-get install libcurl4-openssl-dev && sudo apt-get install build-essential
 
     steps:
@@ -68,6 +70,7 @@ jobs:
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -D${{ matrix.additionalDefine }}
         -S ${{ github.workspace }} -G"${{ matrix.makeFileType }}"
 
     - name: Build
