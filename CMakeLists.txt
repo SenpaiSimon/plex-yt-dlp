@@ -38,10 +38,12 @@ set_property(TARGET ${PROJECT_NAME}
 
 if(MSVC)
     add_compile_definitions(_WIN32)
+    add_compile_definitions(CURL_STATICLIB)
 endif()
 
 if(WIN32)
     add_compile_definitions(_WIN32)
+    add_compile_definitions(CURL_STATICLIB)
 else()
     add_compile_definitions(__linux__)
 endif()
