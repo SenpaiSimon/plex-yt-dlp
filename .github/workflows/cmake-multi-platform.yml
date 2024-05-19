@@ -22,11 +22,16 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
         build_type: [Release]
-        c_compiler: [gcc]
-        include:
+        c_compiler: [gcc, c1]
+        exclude:
+          - os: ubuntu-latest
+            c_compiler: c1
           - os: windows-latest
             c_compiler: gcc
-            cpp_compiler: g++
+        include:
+          - os: windows-latest
+            c_compiler: c1
+            cpp_compiler: c1
             makeFileType: "Ninja"
             curllibCommand: curl -o curl.zip https://curl.se/windows/dl-8.7.1_7/curl-8.7.1_7-win64-mingw.zip && mkdir curlLib && tar -xf curl.zip -C curlLib --strip-components=1 && mv curlLib\lib 'C:\Program Files\'&& mv curlLib\include 'C:\Program Files\'
           - os: ubuntu-latest
