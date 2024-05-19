@@ -47,7 +47,7 @@ else()
 endif()
 
 # Libraries
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(${PROJECT_NAME} PRIVATE
     ${CURL_LIBRARY}
     curlcpp
     nlohmann_json::nlohmann_json 
