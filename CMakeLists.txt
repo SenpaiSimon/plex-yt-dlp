@@ -30,6 +30,12 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
     CUR_VERSION="1.2"
 )
 
+if(WIN32)
+    add_compile_definitions(_WIN32)
+else()
+    add_compile_definitions(__linux__)
+endif()
+
 # Libraries
 target_link_libraries(${PROJECT_NAME}
     ${CURL_LIBRARY}
