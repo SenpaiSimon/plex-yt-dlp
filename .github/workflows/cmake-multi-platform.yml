@@ -25,7 +25,7 @@ jobs:
         c_compiler: [gcc, cl]
         exclude:
           - os: ubuntu-latest
-            c_compiler: c1
+            c_compiler: cl
           - os: windows-latest
             c_compiler: gcc
         include:
