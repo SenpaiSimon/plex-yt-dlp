@@ -30,6 +30,10 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
     CUR_VERSION="1.2"
 )
 
+if(MSVC)
+    add_compile_definitions(_WIN32)
+endif()
+
 if(WIN32)
     add_compile_definitions(_WIN32)
 else()
