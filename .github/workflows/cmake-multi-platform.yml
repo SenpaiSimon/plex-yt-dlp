@@ -33,7 +33,8 @@ jobs:
             c_compiler: cl
             cpp_compiler: cl
             # makeFileType: "Ninja"
-            curllibCommand: curl -o curl.zip https://curl.se/windows/dl-8.7.1_7/curl-8.7.1_7-win64-mingw.zip && mkdir curlLib && tar -xf curl.zip -C curlLib --strip-components=1 && mv curlLib\lib 'C:\Program Files\'&& mv curlLib\include 'C:\Program Files\'
+            # curllibCommand: curl -o curl.zip https://curl.se/windows/dl-8.7.1_7/curl-8.7.1_7-win64-mingw.zip && mkdir curlLib && tar -xf curl.zip -C curlLib --strip-components=1 && mv curlLib\lib 'C:\Program Files\'&& mv curlLib\include 'C:\Program Files\'
+            curllibCommand: ${{ github.workspace }}/vcpkg/vcpkg install curl[tool]
           - os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
