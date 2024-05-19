@@ -23,11 +23,9 @@ Please install the following packages before using this script:
 
 * [yt-dlp](https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp)
 * [ffmpeg](https://ffmpeg.org/)
+* [curl](https://curl.se/)
+* [rsync (Linux only)](https://www.rsync.org/)
 * [python3-mutagen](https://mutagen.readthedocs.io/en/latest/)
-* [git-bash](https://git-scm.com/downloads) (windows only)
-
-On Windows this script is meant to be run in the git-bash shell.
-
 
 # Pre-Setup
 

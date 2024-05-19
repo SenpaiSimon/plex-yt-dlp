@@ -144,6 +144,19 @@ void tools::checkRequirements() {
         cout << colors::boldGreen(" - found!") << endl;
     }
 
+    #ifndef __WIN32
+    cout << "==" << colors::cyan("\t- Searching rsync");
+    lastStatus = tools::checkBinaryStatus("rsync");
+
+    if(lastStatus != EXECUTABLE) {
+        missing = true;
+        cout << colors::boldRed(" - missing!") << endl;
+        cout << "==\t  " << colors::red("-> Install with command: ") << "sudo apt install rsync" << endl;
+    } else {
+        cout << colors::boldGreen(" - found!") << endl;
+    }
+    #endif
+
 
     cout << "==" << colors::cyan("\t- Searching Curl");
     lastStatus = tools::checkBinaryStatus("curl");

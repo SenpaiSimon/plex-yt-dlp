@@ -61,30 +61,31 @@ void downloader::start() {
         tempOutFile = tempPath + DEFAULT_RSS_PLAYLIST_FILE_NAME;
     }
 
-    // post command hook
-    string finalOutputPath = tempPath;
-    string toBeRemoved = string(conf["tempPath"]);
-    finalOutputPath = outputPath + finalOutputPath.erase(finalOutputPath.find(toBeRemoved), toBeRemoved.length());
+    // post command move hooks
+    string tempFolder = string(conf["tempPath"]);
+    string destFolder = outputPath; 
 
     #ifdef __WIN32 
     // convert needed paths to windows backslash bs
-    string tempFolder = string(conf["tempPath"]);
     std::replace(tempFolder.begin(), tempFolder.end(), '/', '\\');
-
-    string destFolder = outputPath; 
     std::replace(destFolder.begin(), destFolder.end(), '/', '\\');
 
     // workaground with echo at the end because yt-dlp keeps appending stupid shit at the end
     string preHook = "\"xcopy /s /y \"\""+ tempFolder + "\"\"\"\" \"\"" + destFolder + "\"\"\"\" && echo \"";
     string postHook = "\"rmdir /s /q \"\"" + tempFolder + "\"\"\"\" && echo \"";
     #else
-    string preHook = "\'mkdir -p \"" + finalOutputPath + "\"\'";
-    string postHook = "\'mv \"" + tempPath + "\"/* \"" + finalOutputPath + "\"/\'";
+    // workaground with echo at the end because yt-dlp keeps appending stupid shit at the end
+    string postHook = "\'rsync --remove-source-files -a \"" + tempFolder + "/\" \"" + destFolder + "\" && echo \'";
     #endif
 
     // download video
     string downloadCommand = "yt-dlp \"" + setting.dlUrl + "\"";
+
+    #ifdef __WIN32
+    // only windows needs a pre hook
     downloadCommand += " --exec " + preHook;
+    #endif
+
     downloadCommand += " --exec " + postHook;
 
     if(setting.mediaType == "video" || setting.mediaType == "videoPlaylist") { 
@@ -156,25 +157,25 @@ void downloader::start() {
                 break;
             }
         }
-        cout << line;
-        // act on certain strings in the output of the command
-        // if(line.find("[download]") != std::string::npos) {
-        //     if(line.find("\% of") != std::string::npos) {
-        //         cout << "== " << colors::cyan(line);
-        //     } else {
-        //         if(line.find("Downloading item") != std::string::npos) {
-        //             cout << "==" << endl;
-        //             cout << "==" << endl;
-        //             cout << "== " << colors::boldGreen(line);
-        //         } else {
-        //             cout << "== " << line;
-        //         }
-        //     }
-        // }
 
-        // if(line.find("[Exec]") != std::string::npos) {
-        //     cout << "== " << line;
-        // }
+        // act on certain strings in the output of the command
+        if(line.find("[download]") != std::string::npos) {
+            if(line.find("\% of") != std::string::npos) {
+                cout << "== " << colors::cyan(line);
+            } else {
+                if(line.find("Downloading item") != std::string::npos) {
+                    cout << "==" << endl;
+                    cout << "==" << endl;
+                    cout << "== " << colors::boldGreen(line);
+                } else {
+                    cout << "== " << line;
+                }
+            }
+        }
+
+        if(line.find("[Exec]") != std::string::npos) {
+            cout << "== " << line;
+        }
 
         line.clear();
     }
