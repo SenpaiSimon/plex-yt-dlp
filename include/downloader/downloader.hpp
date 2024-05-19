@@ -5,6 +5,11 @@
 #include <config.hpp>
 #include <argumentParser/settings.hpp>
 
+#ifdef _WIN32
+#define popen _popen
+#define pclose _pclose
+#endif
+
 #include <string>
 #include <filesystem>
 #include <iostream>
