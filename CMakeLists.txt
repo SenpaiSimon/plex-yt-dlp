@@ -7,6 +7,7 @@ enable_testing()
 # lib curl
 ADD_SUBDIRECTORY(lib/curlcpp)
 INCLUDE_DIRECTORIES(lib/curlcpp/include)
+include_directories(${CURL_INCLUDE_DIR})
 
 # lib json
 set(JSON_BuildTests OFF CACHE INTERNAL "")
