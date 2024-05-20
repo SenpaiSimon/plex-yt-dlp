@@ -64,6 +64,11 @@ jobs:
 
     - name: Install Deps
       run: ${{ matrix.curllibCommand }}
+      
+    - name: Choco Install Deps
+      uses: crazy-max/ghaction-chocolatey@v3.0.0
+      with:
+        args: install curl
     
     - name: Init Submodules
       run: git submodule update --init --recursive
