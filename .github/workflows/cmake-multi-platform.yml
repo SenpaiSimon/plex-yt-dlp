@@ -36,10 +36,10 @@ jobs:
             curllibCommand: > 
               curl -o curl.zip https://curl.se/windows/dl-8.7.1_7/curl-8.7.1_7-win64-mingw.zip && 
               mkdir curlLib && tar -xf curl.zip -C curlLib --strip-components=1 && 
-              mv curlLib\lib 'C:\Program Files\' && 
-              mv curlLib\include 'C:\Program Files\' &&
-              ls 'C:\Program Files\lib' &&
-              ls 'C:\Program Files\include'
+              mv curlLib\lib\* 'C:\mingw64\lib\' && 
+              mv curlLib\include\* 'C:\mingw64\include\' &&
+              ls 'C:\mingw64\lib\' &&
+              ls 'C:\mingw64\include\'
           - os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
@@ -60,19 +60,11 @@ jobs:
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
-    # - name: Install MinGW      
-    #   uses: egor-tensin/setup-mingw@v2.2.0
-    #   with:
-    #     platform: x64
-
     - name: Install Deps
       run: ${{ matrix.curllibCommand }}
     
     - name: Init Submodules
       run: git submodule update --init --recursive
-               
-    - name: Install ninja-build tool
-      uses: seanmiddleditch/gha-setup-ninja@v4
       
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
@@ -85,8 +77,7 @@ jobs:
         -S ${{ github.workspace }} -G"${{ matrix.makeFileType }}"
 
     - name: Build
-      # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
-      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
+      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target all
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v3
