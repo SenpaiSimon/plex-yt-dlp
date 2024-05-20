@@ -37,10 +37,8 @@ jobs:
               curl -o curl.zip https://curl.se/windows/dl-8.7.1_7/curl-8.7.1_7-win64-mingw.zip && 
               mkdir curlLib && tar -xf curl.zip -C curlLib --strip-components=1 && 
               mv .\curlLib\bin\libcurl*.dll 'curlLib\bin\libcurl.dll' &&
-              xcopy /s /y .\curlLib\bin\ 'C:\mingw64\bin\' &&
-              xcopy /s /y .\curlLib\include\ 'C:\mingw64\bin\' &&
-              xcopy /s /y .\curlLib\lib\ 'C:\mingw64\bin\' &&
-              xcopy /s /y .\curlLib\ 'C:\Program Files\Git\mingw64\bin\'
+              xcopy /s /y .\curlLib\*\ 'C:\mingw64\bin\' &&
+              xcopy /s /y .\curlLib\*\ 'C:\Program Files\Git\mingw64\bin\'
           - os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++

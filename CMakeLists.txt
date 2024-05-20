@@ -6,7 +6,7 @@ enable_testing()
 
 if(WIN32)
     add_compile_definitions(_WIN32)
-    add_compile_definitions(CURL_STATICLIB)
+    add_definitions(-DCURL_STATICLIB)
     list(APPEND CMAKE_MODULE_PATH "C:/mingw64")
 else()
     add_compile_definitions(__linux__)
