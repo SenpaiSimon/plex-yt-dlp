@@ -36,12 +36,9 @@ jobs:
             curllibCommand: > 
               curl -o curl.zip https://curl.se/windows/dl-8.7.1_7/curl-8.7.1_7-win64-mingw.zip && 
               mkdir curlLib && tar -xf curl.zip -C curlLib --strip-components=1 && 
-              mv curlLib\bin\libcurl-x64.dll 'curlLib\bin\libcurl-d.dll' &&
-              mv curlLib\bin\libcurl-x64.def 'curlLib\bin\libcurl-d.def' && 
-              mv curlLib\lib\* 'C:\mingw64\lib\' && 
-              mv curlLib\bin\* 'C:\mingw64\bin\' && 
-              mv curlLib\include\* 'C:\mingw64\include\' &&
-              mv curlLib\dep\* 'C:\mingw64\dep\'
+              mv .\curlLib\bin\libcurl*.dll 'curlLib\bin\libcurl.dll' &&
+              xcopy /s /y .\curlLib\ 'C:\mingw64\' &&
+              xcopy /s /y .\curlLib\ 'C:/Program Files/Git/mingw64/'
           - os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
@@ -64,11 +61,6 @@ jobs:
 
     - name: Install Deps
       run: ${{ matrix.curllibCommand }}
-      
-    - name: Choco Install Deps
-      uses: crazy-max/ghaction-chocolatey@v3.0.0
-      with:
-        args: install curl
     
     - name: Init Submodules
       run: git submodule update --init --recursive
