@@ -49,8 +49,9 @@ else()
 endif()
 
 # Libraries
+find_package(CURL ${CURL_MIN_VERSION} REQUIRED)
 target_link_libraries(${PROJECT_NAME}
-    curl
+    ${CURL_LIBRARIES}
     curlcpp
     nlohmann_json::nlohmann_json 
 )
