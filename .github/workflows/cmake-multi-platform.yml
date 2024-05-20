@@ -32,8 +32,12 @@ jobs:
           - os: windows-latest
             c_compiler: cc
             cpp_compiler: c++
-            makeFileType: "Ninja"
-            curllibCommand: curl -o curl.zip https://curl.se/windows/dl-8.7.1_7/curl-8.7.1_7-win64-mingw.zip && mkdir curlLib && tar -xf curl.zip -C curlLib --strip-components=1 && mv curlLib\lib 'C:\Program Files\'&& mv curlLib\include 'C:\Program Files\'
+            makeFileType: "MinGW Makefiles"
+            curllibCommand: > 
+              curl -o curl.zip https://curl.se/windows/dl-8.7.1_7/curl-8.7.1_7-win64-mingw.zip && 
+              mkdir curlLib && tar -xf curl.zip -C curlLib --strip-components=1 && 
+              mv curlLib\lib\* 'C:\mingw64\lib\' && 
+              mv curlLib\include\* 'C:\mingw64\include\'
           - os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
@@ -50,10 +54,10 @@ jobs:
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
-    - name: Install MinGW      
-      uses: egor-tensin/setup-mingw@v2.2.0
-      with:
-        platform: x64
+    # - name: Install MinGW      
+    #   uses: egor-tensin/setup-mingw@v2.2.0
+    #   with:
+    #     platform: x64
 
     - name: Install Deps
       run: ${{ matrix.curllibCommand }}
