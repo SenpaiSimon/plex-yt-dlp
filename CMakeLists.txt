@@ -39,6 +39,7 @@ set_property(TARGET ${PROJECT_NAME}
 if(WIN32)
     add_compile_definitions(_WIN32)
     add_compile_definitions(CURL_STATICLIB)
+    set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};C:\\mingw64\\")
 else()
     add_compile_definitions(__linux__)
 endif()
