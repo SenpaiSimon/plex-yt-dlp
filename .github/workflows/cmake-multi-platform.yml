@@ -50,13 +50,13 @@ jobs:
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
-    - name: Install Deps
-      run: ${{ matrix.curllibCommand }}
-
-    - name: Set up MinGW
-      uses: egor-tensin/setup-mingw@v2
+    - name: Install MinGW      
+      uses: egor-tensin/setup-mingw@v2.2.0
       with:
         platform: x64
+
+    - name: Install Deps
+      run: ${{ matrix.curllibCommand }}
     
     - name: Init Submodules
       run: git submodule update --init --recursive
