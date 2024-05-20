@@ -36,8 +36,8 @@ jobs:
             curllibCommand: > 
               curl -o curl.zip https://curl.se/windows/dl-8.7.1_7/curl-8.7.1_7-win64-mingw.zip && 
               mkdir curlLib && tar -xf curl.zip -C curlLib --strip-components=1 && 
-              mv curlLib\bin\libcurl-x64.dll 'curlLib\bin\libcurl.dll' &&
-              mv curlLib\bin\libcurl-x64.def 'curlLib\bin\libcurl.def' && 
+              mv curlLib\bin\libcurl-x64.dll 'curlLib\bin\libcurl-d.dll' &&
+              mv curlLib\bin\libcurl-x64.def 'curlLib\bin\libcurl-d.def' && 
               mv curlLib\lib\* 'C:\mingw64\lib\' && 
               mv curlLib\bin\* 'C:\mingw64\bin\' && 
               mv curlLib\include\* 'C:\mingw64\include\' &&
