@@ -32,7 +32,6 @@ Please install the following packages before using this script:
 ## Config-File
 
 Upon running the script for the first time you will be prompted with the message that a `config.txt`-File was created.
-Please add your paths and your api-key to the `config.json`-File.
 
 ### Config-File Example
 
@@ -55,7 +54,7 @@ Please add your paths and your api-key to the `config.json`-File.
 
 # Usage
 
-Just use `plex-yt-dlp -h` or `plex-yt-dl --help` for the help screen.
+Just use `./plex-yt-dlp -h` or `./plex-yt-dlp --help` for the help screen.
 
 This will print something like:
 
@@ -95,22 +94,22 @@ This will print something like:
 
 ```bash
 # Download a video/playlist
-ytdl.sh -u ulrHere -t video
+./plex-yt-dlp -u urlHere -t video
 
 # Download a single track or playlist
-ytdl.sh -u urlHere -t music
+./plex-yt-dlp -u urlHere -t music
 
 # Download a rss feed
-ytdl.sh -u urlHere -t rss
+./plex-yt-dlp -u urlHere -t rss
 
 # Download a playlist starting from index 10
-ytdl.sh -u ulrHere -t video -io 10
+./plex-yt-dlp -u urlHere -t video -io 10
 
 # Download a music playlist starting from index 10
-ytdl.sh -u ulrHere -t music -io 10
+./plex-yt-dlp -u urlHere -t music -io 10
 
 # Download a rss feed starting from index 10
-ytdl.sh -u ulrHere -t rss -io 10
+./plex-yt-dlp -u urlHere -t rss -io 10
 ```
 
 

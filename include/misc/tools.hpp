@@ -52,8 +52,9 @@ class tools {
         
     public:
         static bool fileExists(string filePath);
+        static void installYtdlp();
+        static void downloadFile(string fileName, string url);
         static string getRequest(string req);
-        static string escapePath(const string& path);
         // prints a line
         static void printLine();
         // execute command and get the output

@@ -4,9 +4,11 @@ void tools::printLine() {
     cout << "==========================================================================================================" << endl;
 }
 
+
 bool tools::fileExists(string filePath) {
     return fs::exists(filePath);
 }
+
 
 string escapePath(const string& path) {
     #ifdef _WIN32
@@ -27,6 +29,7 @@ string escapePath(const string& path) {
     return escapedPath;
 }
 
+
 string tools::executeCommand(const string& command) {
     FILE *fp = popen(command.c_str(), "r");
     if(fp == NULL) {
@@ -43,6 +46,7 @@ string tools::executeCommand(const string& command) {
     pclose(fp);
     return result;
 }
+
 
 tools::binaryStatus_t tools::checkBinaryStatus(string name) {
     string commandRes = "";
@@ -78,6 +82,37 @@ tools::binaryStatus_t tools::checkBinaryStatus(string name) {
     }
 }
 
+
+void tools::downloadFile(string fileName, string url) {
+  std::ofstream outFile;
+  outFile.open(fileName);
+
+  // Create a curl_ios object to handle the stream
+  curl_ios<std::ostream> writer(outFile);
+  // Pass it to the easy constructor and watch the content returned in that file!
+  curl_easy easy(writer);
+
+  // Add some option to the easy handle
+  easy.add<CURLOPT_URL>(url.c_str());
+  easy.add<CURLOPT_FOLLOWLOCATION>(1L);
+  easy.add<CURLOPT_SSL_OPTIONS>(CURLSSLOPT_NATIVE_CA); // todo linux maybe nicht?
+
+  try {
+        // Execute the request
+        easy.perform();
+
+    } catch (curl_easy_exception &error) {
+		// If you want to print the last error.
+		std::cerr<<error.what()<<std::endl;
+
+		// If you want to print the entire error stack you can do
+		error.print_traceback();
+  } 
+
+  outFile.close();
+}
+
+
 string tools::getRequest(string req) {
     // Create a stringstream object
     ostringstream str;
@@ -103,6 +138,21 @@ string tools::getRequest(string req) {
     return str.str();
 }
 
+
+void tools::installYtdlp() {
+    cout << "==\t  " << colors::magenta("-> Downloading yt-dlp") << endl;
+    fs::create_directory("./temp");
+    downloadFile("./temp/yt-dlp", "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp");
+    executeCommand("chmod +x ./temp/yt-dlp");
+
+    cout << "==\t  " << colors::magenta("-> Moving yt-dlp to /usr/bin/ -- please enter password") << endl;
+    executeCommand("sudo mv ./temp/yt-dlp /usr/bin/");
+    fs::remove_all("./temp");
+
+    cout << "==\t  " << colors::green("-> Done") << endl;
+}
+
+
 void tools::checkRequirements() {
     tools::printLine();
     tools::binaryStatus lastStatus;
@@ -119,7 +169,12 @@ void tools::checkRequirements() {
         missing = true;
         if(lastStatus == MISSING) {
             cout << colors::boldRed(" - missing!") << endl;
-            cout << "==\t  " << colors::red("-> Install from here: ") <<  "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp" << endl;
+            #ifndef _WIN32
+            installYtdlp();
+            #else
+            cout << "==\t  " << colors::red("-> Download from here: ") <<  "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp" << endl;
+            cout << "==\t  " << colors::red("   then add the binary to your PATH") << endl;
+            #endif
         } else if(lastStatus == FOUND) {
             cout << colors::boldRed(" - found, but not executable!") << endl;
             cout << "==\t  " << colors::red("-> Make it executable: ") <<  "chmod +x /path/to/your/bin/yt-dlp" << endl;
@@ -163,6 +218,11 @@ void tools::checkRequirements() {
     if(lastStatus != EXECUTABLE) {
         missing = true;
         cout << colors::boldRed(" - missing!") << endl;
+        #ifdef _WIN32
+        cout << "==\t  " << colors::red("-> Install with command: ") << "winget install -e --id cURL.cURL" << endl;
+        #else
+        cout << "==\t  " << colors::red("-> Install with command: ") << "sudo apt install curl" << endl;
+        #endif
     } else {
         cout << colors::boldGreen(" - found!") << endl;
     }
@@ -174,6 +234,7 @@ void tools::checkRequirements() {
         exit(1);
     }
 }
+
 
 void tools::printHelp() {
     tools::printLine();
@@ -207,11 +268,13 @@ void tools::printHelp() {
     tools::printLine();
 }
 
+
 smatch tools::getRegexMatches(string str, string pattern) {
     smatch matches;
     regex_search(str, matches, regex(pattern));
     return matches;
 }
+
 
 void tools::printVersion() {
     cout << "Version is: " << CUR_VERSION << endl;
