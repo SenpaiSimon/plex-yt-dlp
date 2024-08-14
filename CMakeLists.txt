@@ -36,7 +36,7 @@ add_executable(${PROJECT_NAME}
 )
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC
-    CUR_VERSION="1.2"
+    CUR_VERSION="1.3"
 )
 
 # c++ standard
@@ -59,7 +59,7 @@ add_compile_options(
     -Wno-format          # int != int32_t as far as the compiler is concerned because gcc has int32_t as long int
     -Wno-unused-function # we have some for the docs that aren't called
     -Wno-maybe-uninitialized
-    -O3
+    -O1
 )
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
