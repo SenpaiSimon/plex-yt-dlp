@@ -12,6 +12,7 @@ settings::settings() {
     this->reverse = false;
     this->album = "";
     this->artist = "";
+    this->jellyfin = false;
 
     char cCurrentPath[FILENAME_MAX];
     if (GetCurrentDir(cCurrentPath, sizeof(cCurrentPath))) {

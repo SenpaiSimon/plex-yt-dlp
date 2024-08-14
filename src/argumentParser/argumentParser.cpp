@@ -58,6 +58,11 @@ settings argumentParser::parse() {
             this->setting.reverse = true;
             continue;
         }
+
+        if(string(this->argValues[i]) == "--jellyfin" || string(this->argValues[i]) == "-j") {
+            this->setting.jellyfin = true;
+            continue;
+        }
         
         tools::printLine();
         cout << "==" << endl;

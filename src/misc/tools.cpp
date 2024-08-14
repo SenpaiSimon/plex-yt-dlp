@@ -259,6 +259,9 @@ void tools::printHelp() {
     cout << "== -r, --reverse" << endl;
     cout << "==\tReverse the order of the given playlist or rss feed" << endl;
     cout << "==" << endl;
+    cout << "== -j, --jellyfin" << endl;
+    cout << "==\tApply naming scheme for jellyfin instead of plex" << endl;
+    cout << "==" << endl;
     cout << "== -io, --indexOverwrite [num] -- optional" << endl;
     cout << "==\tOverwrite the playlist index" << endl;
     cout << "==" << endl;

@@ -31,7 +31,13 @@ void idExtractor::extractData() {
     // setup paths and names -- todo fill in artist and album
     if(setting->mediaType == "videoPlaylist") {
         // this path is without a ending slash /
-        playlistPath = string(conf["videoPath"]) + tools::executeCommand(YT_DLP_PARSE_PATH(DEFAULT_VIDEO_PLAYLIST_PATH_PATTERN, setting->dlUrl));
+        if(setting->jellyfin) {
+            playlistPath = string(conf["videoPath"]) + \
+                tools::executeCommand(YT_DLP_PARSE_PATH(JELLY_VIDEO_PLAYLIST_PATH_PATTERN, setting->dlUrl));
+        } else {
+            playlistPath = string(conf["videoPath"]) + \
+                tools::executeCommand(YT_DLP_PARSE_PATH(DEFAULT_VIDEO_PLAYLIST_PATH_PATTERN, setting->dlUrl));
+        }
         // also without a ending slash /
         channelPath = playlistPath;
         channelPath = channelPath.erase(channelPath.find_last_of("/"));
@@ -39,7 +45,8 @@ void idExtractor::extractData() {
 
     if(setting->mediaType == "musicPlaylist") {
         // this path is without a ending slash /
-        playlistPath = string(conf["musicPath"]) + tools::executeCommand(YT_DLP_PARSE_PATH(DEFAULT_MUSIC_PLAYLIST_PATH_PATTERN, setting->dlUrl));
+        playlistPath = string(conf["musicPath"]) + \
+            tools::executeCommand(YT_DLP_PARSE_PATH(DEFAULT_MUSIC_PLAYLIST_PATH_PATTERN, setting->dlUrl));
         // also without a ending slash /
         channelPath = playlistPath;
         channelPath = channelPath.erase(channelPath.find_last_of("/"));
@@ -47,7 +54,8 @@ void idExtractor::extractData() {
     
     if(setting->mediaType == "rss") { 
         // this path is without a ending slash /
-        playlistPath = string(conf["rssPath"]) + tools::executeCommand(YT_DLP_PARSE_PATH(DEFAULT_RSS_PLAYLIST_PATH_PATTERN, setting->dlUrl));
+        playlistPath = string(conf["rssPath"]) + \
+            tools::executeCommand(YT_DLP_PARSE_PATH(DEFAULT_RSS_PLAYLIST_PATH_PATTERN, setting->dlUrl));
         playlistCount = tools::executeCommand(YT_DLP_PARSE_PATH("%(playlist_count)s", setting->dlUrl));
     }
 

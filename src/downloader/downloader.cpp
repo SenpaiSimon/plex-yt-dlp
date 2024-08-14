@@ -33,7 +33,11 @@ void downloader::start() {
             getline(cin, this->customFolder);
         }
         outputPath = conf["videoPath"];
-        tempPath = string(conf["tempPath"]) + DEFAULT_VIDEO_PATH_PATTERN(this->customFolder); 
+        if(setting.jellyfin) {
+            tempPath = string(conf["tempPath"]) + JELLY_VIDEO_PATH_PATTERN(this->customFolder); 
+        } else {
+            tempPath = string(conf["tempPath"]) + DEFAULT_VIDEO_PATH_PATTERN(this->customFolder); 
+        }
         tempOutFile =  tempPath + DEFAULT_VIDEO_FILE_NAME;
     } else if (setting.mediaType == "music") { // single music file
         cout << "==" << endl;
@@ -46,7 +50,11 @@ void downloader::start() {
         tempOutFile =  tempPath + DEFAULT_MUSIC_FILE_NAME;
     } else if (setting.mediaType == "videoPlaylist") { // whole video playlist
         outputPath = conf["videoPath"];
-        tempPath = string(conf["tempPath"]) + DEFAULT_VIDEO_PLAYLIST_PATH_PATTERN; 
+        if(setting.jellyfin) {
+            tempPath = string(conf["tempPath"]) + JELLY_VIDEO_PLAYLIST_PATH_PATTERN; 
+        } else {
+            tempPath = string(conf["tempPath"]) + DEFAULT_VIDEO_PLAYLIST_PATH_PATTERN; 
+        }
         tempOutFile = tempPath + DEFAULT_VIDEO_PLAYLIST_FILE_NAME(to_string(setting.idOverwrite));
     } else if (setting.mediaType == "musicPlaylist") { // whole music playlist
         outputPath = conf["musicPath"];

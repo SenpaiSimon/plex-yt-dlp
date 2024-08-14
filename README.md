@@ -5,9 +5,10 @@
 Easy to use binary wrapper for using [yt-dlp](https://github.com/yt-dlp/yt-dlp).
 
 # What it does
-* This creates the Folder-Structures and also the File-Names exactly like it's needed for using in a Plex-Library.
+* This creates the Folder-Structures and also the File-Names exactly like it's needed for using in a Plex/Jellyfin Library.
 
 * For Plex you have to use the [YouTube-Agent](https://github.com/ZeroQI/YouTube-Agent.bundle) alongside with the [Absolute-Series-Scanner](https://github.com/ZeroQI/Absolute-Series-Scanner) for your library to look beautiful.
+* For Jellyfin you have to use the [YouTube Plugin](https://github.com/ankenyr/jellyfin-youtube-metadata-plugin)
 
 # Features
 * Embeds Video metadata into the video itself
@@ -16,6 +17,7 @@ Easy to use binary wrapper for using [yt-dlp](https://github.com/yt-dlp/yt-dlp).
 * Downloads metadata as info.json for plex
 * Downloads and embeds english and german subtitles if available
 * This can also download RSS-Feeds -- use "rss" option for that
+* Also supports naming schemes for Jellyfin
 
 # Requirements
 
@@ -80,6 +82,9 @@ This will print something like:
 ==
 == -r, --reverse
 ==      Reverse the order of the given playlist or rss feed
+==
+== -j, --jellyfin
+==      Apply naming scheme for jellyfin instead of plex
 ==
 == -io, --indexOverwrite [num] -- optional
 ==      Overwrite the playlist index

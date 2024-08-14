@@ -38,5 +38,6 @@ class settings
 
         string cwd;
 
+        bool jellyfin;
         settings();
 };
