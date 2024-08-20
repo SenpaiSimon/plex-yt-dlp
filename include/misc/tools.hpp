@@ -68,4 +68,5 @@ class tools {
 
         static void printHelp();
         static void printVersion();
+        static void printEmptyFile();
 };

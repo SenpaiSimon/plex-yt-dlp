@@ -42,6 +42,9 @@ int main(int argc, char** argv){
             dl.setNewDlUrl(curUrl);
             dl.start();
         }
+        if(dl.getDownloadedCount() <= 0) {
+            tools::printEmptyFile();
+        }
     } else {
         dl.start();
     }

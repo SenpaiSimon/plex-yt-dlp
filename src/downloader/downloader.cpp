@@ -4,6 +4,7 @@ downloader::downloader(settings setting, json conf) {
     this->setting = setting;
     this->conf = conf;
     this->customFolder = "";
+    this->downloadedItems = 0;
 }
 
 void downloader::setNewDlUrl(string url) {
@@ -14,6 +15,10 @@ void downloader::preStart() {
     fs::create_directories(conf["videoPath"]);
     fs::create_directories(conf["musicPath"]);
     fs::create_directories("temp");
+}
+
+int downloader::getDownloadedCount() {
+    return this->downloadedItems;
 }
 
 void downloader::start() {
@@ -193,6 +198,7 @@ void downloader::start() {
     cout << "==" << endl;
     tools::printLine();
     this->postStart();   
+    this->downloadedItems++;
 }
 
 void downloader::postStart() {

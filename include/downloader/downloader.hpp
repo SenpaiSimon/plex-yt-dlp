@@ -29,10 +29,13 @@ class downloader {
         json conf;
         string customFolder;
 
+        int downloadedItems;
+
         void preStart();
         void postStart();
     public:
         void setNewDlUrl(string url);
         downloader(settings setting, json conf);
         void start();
+        int getDownloadedCount();
 };

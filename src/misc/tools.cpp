@@ -271,6 +271,16 @@ void tools::printHelp() {
     tools::printLine();
 }
 
+void tools::printEmptyFile() {
+    cout << "==" << endl;
+    cout << "== " << colors::yellow("File given by ") << colors::boldYellow("-l") << colors::yellow(" or ") \
+                  << colors::boldYellow("--list") << colors::yellow(" did not contain any links") << endl;
+    cout << "==\t" << colors::cyan("- Did you mean ") << colors::boldGreen("-u") << colors::cyan(" or ") \
+                   << colors::boldGreen("--url") << colors::cyan("?") << endl;
+    cout << "==" << endl;
+    tools::printLine();
+}
+
 
 smatch tools::getRegexMatches(string str, string pattern) {
     smatch matches;
