@@ -14,6 +14,7 @@ void downloader::setNewDlUrl(string url) {
 void downloader::preStart() {
     fs::create_directories(conf["videoPath"]);
     fs::create_directories(conf["musicPath"]);
+    fs::create_directories(conf["rssPath"]);
     fs::create_directories("temp");
 }
 
@@ -28,7 +29,6 @@ void downloader::start() {
     string outputPath = "";
     string tempOutFile = "";
     string tempPath = "";
-    string rssArtistName = "";
 
     // TODO check for missing artist or album and prompt user
     if(setting.mediaType == "video") { // single video
@@ -62,13 +62,22 @@ void downloader::start() {
         }
         tempOutFile = tempPath + DEFAULT_VIDEO_PLAYLIST_FILE_NAME(to_string(setting.idOverwrite));
     } else if (setting.mediaType == "musicPlaylist") { // whole music playlist
+        if(setting.artist.empty()) {
+            cout << "==" << endl;
+            cout << "== Enter " << colors::cyan("Artist Name") << ": ";
+            getline(cin, setting.artist);
+        }
+
         outputPath = conf["musicPath"];
-        tempPath = string(conf["tempPath"]) + DEFAULT_MUSIC_PLAYLIST_PATH_PATTERN; 
+        tempPath = string(conf["tempPath"]) + DEFAULT_MUSIC_PLAYLIST_PATH_PATTERN(setting.artist); 
         tempOutFile = tempPath + DEFAULT_MUSIC_PLAYLIST_FILE_NAME;
     } else if (setting.mediaType == "rss") { // single rss feed
-        cout << "==" << endl;
-        cout << "== Enter " << colors::cyan("Artist Name") << ": ";
-        getline(cin, rssArtistName);
+        if(setting.artist.empty()) {
+            cout << "==" << endl;
+            cout << "== Enter " << colors::cyan("Artist Name") << ": ";
+            getline(cin, setting.artist);
+        }
+
         outputPath = conf["rssPath"];
         tempPath = string(conf["tempPath"]) + DEFAULT_RSS_PLAYLIST_PATH_PATTERN; 
         tempOutFile = tempPath + DEFAULT_RSS_PLAYLIST_FILE_NAME;
@@ -110,14 +119,16 @@ void downloader::start() {
         downloadCommand += " --embed-thumbnail --embed-metadata";
         downloadCommand += " --parse-metadata \"playlist_autonumber:%(track_number)s\"";
         downloadCommand += " --parse-metadata \"playlist_title:%(album)s\"";
+        downloadCommand += " --parse-metadata \"playlist_autonumber:%(artist)s\""; // hacky workaround to get it to replace stuff
+        downloadCommand += " --replace-in-metadata \"artist\" \"\\d+\" \"" + setting.artist +"\"";
         downloadCommand += " --add-metadata --embed-chapters";
         downloadCommand += " -f \"bestaudio[ext=m4a]/bestaudio[ext=aac]/bestaudio[ext=mp3]\" -o \"" + tempOutFile + "\"";
     } else if (setting.mediaType == "rss") {
         downloadCommand += " --embed-thumbnail --embed-metadata";
         downloadCommand += " --parse-metadata \"playlist_autonumber:%(track_number)s\"";
         downloadCommand += " --parse-metadata \"playlist_title:%(album)s\"";
-        downloadCommand += " --parse-metadata \"playlist_autonumber:%(artist)s\"";
-        downloadCommand += " --replace-in-metadata \"artist\" \"\\d+\" \"" + rssArtistName +"\"";
+        downloadCommand += " --parse-metadata \"playlist_autonumber:%(artist)s\""; // hacky workaround to get it to replace stuff
+        downloadCommand += " --replace-in-metadata \"artist\" \"\\d+\" \"" + setting.artist +"\"";
         downloadCommand += " --add-metadata --embed-chapters";
         downloadCommand += " -f \"bestaudio[ext=m4a]/bestaudio[ext=aac]/bestaudio[ext=mp3]\" -o \"" + tempOutFile + "\"";
     }

@@ -268,6 +268,9 @@ void tools::printHelp() {
     cout << "== -ido, --idOverwrite [num] -- optional" << endl;
     cout << "==\tOverwrite the auto ID" << endl;
     cout << "==" << endl;
+    cout << "== -aro, --artistOverwrite [album name] -- optional" << endl;
+    cout << "==\tPre-Set the Album to set for music and rss" << endl;
+    cout << "==" << endl;
     tools::printLine();
 }
 

@@ -63,6 +63,18 @@ settings argumentParser::parse() {
             this->setting.jellyfin = true;
             continue;
         }
+
+        // if(string(this->argValues[i]) == "--albumOverwrite" || string(this->argValues[i]) == "-alo") {
+        //     this->setting.album = this->argValues[i + 1];
+        //     i++;
+        //     continue;
+        // }
+
+        if(string(this->argValues[i]) == "--artistOverwrite" || string(this->argValues[i]) == "-aro") {
+            this->setting.artist = this->argValues[i + 1];
+            i++;
+            continue;
+        }
         
         tools::printLine();
         cout << "==" << endl;

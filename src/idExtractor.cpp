@@ -46,7 +46,7 @@ void idExtractor::extractData() {
     if(setting->mediaType == "musicPlaylist") {
         // this path is without a ending slash /
         playlistPath = string(conf["musicPath"]) + \
-            tools::executeCommand(YT_DLP_PARSE_PATH(DEFAULT_MUSIC_PLAYLIST_PATH_PATTERN, setting->dlUrl));
+            tools::executeCommand(YT_DLP_PARSE_PATH(DEFAULT_MUSIC_PLAYLIST_PATH_PATTERN(setting->artist), setting->dlUrl));
         // also without a ending slash /
         channelPath = playlistPath;
         channelPath = channelPath.erase(channelPath.find_last_of("/"));
