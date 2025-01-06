@@ -38,4 +38,5 @@ class downloader {
         downloader(settings setting, json conf);
         void start();
         int getDownloadedCount();
+        string getCustomFolder();
 };

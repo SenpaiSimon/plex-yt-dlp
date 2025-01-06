@@ -6,6 +6,7 @@
 #include <config.hpp>
 #include <idExtractor.hpp>
 #include <downloader/downloader.hpp>
+#include <downloader/postProcess.hpp>
 
 // externals
 #include <iostream>

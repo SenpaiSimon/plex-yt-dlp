@@ -28,19 +28,19 @@ void idExtractor::extractData() {
     int episodeCount = 0;
     int id = 0;
 
-    // setup paths and names -- todo fill in artist and album
+    // setup paths and names
     if(setting->mediaType == "videoPlaylist") {
         // this path is without a ending slash /
         if(setting->jellyfin) {
             playlistPath = string(conf["videoPath"]) + \
-                tools::executeCommand(YT_DLP_PARSE_PATH(JELLY_VIDEO_PLAYLIST_PATH_PATTERN, setting->dlUrl));
+                tools::executeCommand(YT_DLP_PARSE_PATH(JELLY_VIDEO_PLAYLIST_PATH_PATTERN("%(playlist_title)s"), setting->dlUrl));
+            channelPath = playlistPath;
         } else {
             playlistPath = string(conf["videoPath"]) + \
                 tools::executeCommand(YT_DLP_PARSE_PATH(DEFAULT_VIDEO_PLAYLIST_PATH_PATTERN, setting->dlUrl));
+            channelPath = playlistPath;
+            channelPath = channelPath.erase(channelPath.find_last_of("/"));
         }
-        // also without a ending slash /
-        channelPath = playlistPath;
-        channelPath = channelPath.erase(channelPath.find_last_of("/"));
     } 
 
     if(setting->mediaType == "musicPlaylist") {
@@ -59,8 +59,10 @@ void idExtractor::extractData() {
         playlistCount = tools::executeCommand(YT_DLP_PARSE_PATH("%(playlist_count)s", setting->dlUrl));
     }
 
+    setting->playlistPath = playlistPath;
     cout << colors::boldGreen(" - done") << endl;
 
+    // only find out which index to start from
     //  its a existing playlist from and existing channel
     if(fs::exists(playlistPath)) {
         cout << "==\t" << colors::cyan("- Found existing Playlist from existing Channel");
@@ -86,7 +88,8 @@ void idExtractor::extractData() {
             }
         }
 
-        if(setting->mediaType == "videoPlaylist") {
+        // this does not need to run for jellyfin
+        if(setting->mediaType == "videoPlaylist" != setting->jellyfin) {
             for (const auto& entry : std::filesystem::directory_iterator(playlistPath)) {
                 // get the filename and extract the id by Season
                 string fileName = entry.path().filename().string();

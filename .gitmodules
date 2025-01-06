@@ -4,3 +4,6 @@
 [submodule "lib/curlcpp"]
 	path = lib/curlcpp
 	url = https://github.com/JosephP91/curlcpp.git
+[submodule "lib/tinyxml"]
+	path = lib/tinyxml
+	url = https://github.com/leethomason/tinyxml2.git

@@ -39,5 +39,6 @@ class settings
         string cwd;
 
         bool jellyfin;
+        string playlistPath;
         settings();
 };

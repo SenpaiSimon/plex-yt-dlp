@@ -6,6 +6,7 @@ Easy to use binary wrapper for using [yt-dlp](https://github.com/yt-dlp/yt-dlp).
 
 # What it does
 * This creates the Folder-Structures and also the File-Names exactly like it's needed for using in a Plex/Jellyfin Library.
+* In the case of Jellyfin it creates the .nfo files from the info.json so you dont need to use the YouTube Metadata Plugin for Jellyfin.
 
 * For Plex you have to use the [YouTube-Agent](https://github.com/ZeroQI/YouTube-Agent.bundle) alongside with the [Absolute-Series-Scanner](https://github.com/ZeroQI/Absolute-Series-Scanner) for your library to look beautiful.
 * For Jellyfin you have to use the [YouTube Plugin](https://github.com/ankenyr/jellyfin-youtube-metadata-plugin)

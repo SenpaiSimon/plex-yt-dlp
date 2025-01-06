@@ -22,6 +22,10 @@ set(JSON_BuildTests OFF CACHE INTERNAL "")
 ADD_SUBDIRECTORY(lib/json)
 INCLUDE_DIRECTORIES(lib/json/include)
 
+# lib xml
+ADD_SUBDIRECTORY(lib/tinyxml)
+INCLUDE_DIRECTORIES(lib/tinyxml)
+
 INCLUDE_DIRECTORIES(include)
 
 add_executable(${PROJECT_NAME}
@@ -32,6 +36,7 @@ add_executable(${PROJECT_NAME}
     src/config.cpp
     src/idExtractor.cpp
     src/downloader/downloader.cpp
+    src/downloader/postProcess.cpp
     src/main.cpp
 )
 
@@ -46,10 +51,11 @@ set_property(TARGET ${PROJECT_NAME}
 
 # Libraries
 find_package(CURL ${CURL_MIN_VERSION} REQUIRED)
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(${PROJECT_NAME} PRIVATE
     ${CURL_LIBRARIES}
     curlcpp
     nlohmann_json::nlohmann_json 
+    tinyxml2::tinyxml2
 )
 
 # Compiler Flags

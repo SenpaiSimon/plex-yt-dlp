@@ -45,8 +45,17 @@ int main(int argc, char** argv){
         if(dl.getDownloadedCount() <= 0) {
             tools::printEmptyFile();
         }
+
+        // get the user custom path back
+        setting.playlistPath = string(conf["videoPath"]) + "/" + dl.getCustomFolder();
     } else {
         dl.start();
+    }
+
+    // post processing for nfo in jellyfin
+    if(setting.jellyfin) {
+        postProcess post(setting);
+        post.convert();
     }
 
     return 0;

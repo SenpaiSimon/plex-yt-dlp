@@ -56,11 +56,13 @@ void downloader::start() {
     } else if (setting.mediaType == "videoPlaylist") { // whole video playlist
         outputPath = conf["videoPath"];
         if(setting.jellyfin) {
-            tempPath = string(conf["tempPath"]) + JELLY_VIDEO_PLAYLIST_PATH_PATTERN; 
+            fs::path jellyPath = setting.playlistPath;
+            tempPath = string(conf["tempPath"]) + JELLY_VIDEO_PLAYLIST_PATH_PATTERN(jellyPath.filename().string()); 
+            tempOutFile = tempPath + JELLY_VIDEO_PLAYLIST_FILE_NAME;
         } else {
             tempPath = string(conf["tempPath"]) + DEFAULT_VIDEO_PLAYLIST_PATH_PATTERN; 
+            tempOutFile = tempPath + DEFAULT_VIDEO_PLAYLIST_FILE_NAME(to_string(setting.idOverwrite));
         }
-        tempOutFile = tempPath + DEFAULT_VIDEO_PLAYLIST_FILE_NAME(to_string(setting.idOverwrite));
     } else if (setting.mediaType == "musicPlaylist") { // whole music playlist
         if(setting.artist.empty()) {
             cout << "==" << endl;
@@ -109,6 +111,7 @@ void downloader::start() {
     #endif
 
     downloadCommand += " --exec " + postHook;
+    downloadCommand += " --restrict-filenames";
 
     if(setting.mediaType == "video" || setting.mediaType == "videoPlaylist") { 
         downloadCommand += " --sub-format best --sub-langs de.*,ger.*,en.*";
@@ -215,4 +218,8 @@ void downloader::start() {
 
 void downloader::postStart() {
     fs::remove_all("temp");
+}
+
+string downloader::getCustomFolder() {
+    return this->customFolder;
 }
