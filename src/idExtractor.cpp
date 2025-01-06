@@ -32,8 +32,12 @@ void idExtractor::extractData() {
     if(setting->mediaType == "videoPlaylist") {
         // this path is without a ending slash /
         if(setting->jellyfin) {
-            playlistPath = string(conf["videoPath"]) + \
-                tools::executeCommand(YT_DLP_PARSE_PATH(JELLY_VIDEO_PLAYLIST_PATH_PATTERN("%(playlist_title)s"), setting->dlUrl));
+            string tempScraperPath = tools::executeCommand(YT_DLP_PARSE_PATH(JELLY_VIDEO_PLAYLIST_PATH_PATTERN("%(playlist_title)s"), setting->dlUrl));
+            // replace all the stupid characters peopple type in their names
+            std::regex rgx("[^a-zA-Z0-9]");
+            tempScraperPath = std::regex_replace(tempScraperPath, rgx, "_");
+
+            playlistPath = string(conf["videoPath"]) + "/" + tempScraperPath;
             channelPath = playlistPath;
         } else {
             playlistPath = string(conf["videoPath"]) + \

@@ -4,6 +4,13 @@ postProcess::postProcess(settings setting) {
     this->setting = setting;
 }
 
+bool postProcess::isPlaylistMeta(fs::path path) {
+    string filename = path.filename().string();
+    return filename.rfind("E0 - ", 0) == 0 || 
+           filename.rfind("E00 - ", 0) == 0 ||
+           filename.rfind("E000 - ", 0) == 0;
+}
+
 void postProcess::convert() {
     vector<fs::path> images;
     vector<fs::path> infoJson;
@@ -14,7 +21,7 @@ void postProcess::convert() {
     for (const auto& entry : std::filesystem::directory_iterator(setting.playlistPath)) {
         // episode info json
         if(entry.path().extension() == ".json") {
-            if(entry.path().filename().string().find("E0 - ") != std::string::npos) {
+            if(this->isPlaylistMeta(entry.path())) {
                 playlistInfo = entry.path();
             } else {
                 infoJson.push_back(entry.path());
@@ -26,7 +33,7 @@ void postProcess::convert() {
            entry.path().extension() == ".webp" || \
            entry.path().extension() == ".png") {
             // we dont want E0 image since it has bad quality
-            if(entry.path().filename().string().find("E0 - ") == std::string::npos) {
+            if(!this->isPlaylistMeta(entry.path())) {
                 images.push_back(entry.path());
             }
         }

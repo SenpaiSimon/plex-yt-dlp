@@ -12,7 +12,7 @@
 #define DEFAULT_VIDEO_FILE_NAME "/%(title)s [%(id)s].%(ext)s"
 
 #define DEFAULT_VIDEO_PLAYLIST_PATH_PATTERN "/%(uploader)s/%(playlist_title)s [youtube-%(playlist_id)s]"
-#define JELLY_VIDEO_PLAYLIST_PATH_PATTERN(folder)   "/" + folder
+#define JELLY_VIDEO_PLAYLIST_PATH_PATTERN(folder) folder
 #define DEFAULT_VIDEO_PLAYLIST_FILE_NAME(id) "/%(title)s - S" + id + "E%(playlist_index)s [%(id)s].%(ext)s"
 #define JELLY_VIDEO_PLAYLIST_FILE_NAME      "/E%(playlist_index)s - %(title)s [%(id)s].%(ext)s"
 

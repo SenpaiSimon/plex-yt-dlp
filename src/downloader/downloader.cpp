@@ -57,7 +57,7 @@ void downloader::start() {
         outputPath = conf["videoPath"];
         if(setting.jellyfin) {
             fs::path jellyPath = setting.playlistPath;
-            tempPath = string(conf["tempPath"]) + JELLY_VIDEO_PLAYLIST_PATH_PATTERN(jellyPath.filename().string()); 
+            tempPath = string(conf["tempPath"]) + "/" +  JELLY_VIDEO_PLAYLIST_PATH_PATTERN(jellyPath.filename().string()); 
             tempOutFile = tempPath + JELLY_VIDEO_PLAYLIST_FILE_NAME;
         } else {
             tempPath = string(conf["tempPath"]) + DEFAULT_VIDEO_PLAYLIST_PATH_PATTERN; 

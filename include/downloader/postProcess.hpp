@@ -41,6 +41,7 @@ class postProcess {
         nfoInfo_t scrapePath(fs::path path, bool episode);
         void createNfo(fs::path path, nfoInfo_t nfo, bool episode);
         std::string reformatDate(const std::string& date);
+        bool isPlaylistMeta(fs::path path);
 
     public:
         postProcess(settings setting);
