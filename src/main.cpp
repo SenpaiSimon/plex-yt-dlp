@@ -46,10 +46,14 @@ int main(int argc, char** argv){
             tools::printEmptyFile();
         }
 
-        // get the user custom path back
-        setting.playlistPath = string(conf["videoPath"]) + "/" + dl.getCustomFolder();
     } else {
         dl.start();
+    }
+
+    // the custom path is set
+    if(dl.getCustomFolder() != "") {
+        // get the user custom path back
+        setting.playlistPath = string(conf["videoPath"]) + "/" + dl.getCustomFolder();
     }
 
     // post processing for nfo in jellyfin

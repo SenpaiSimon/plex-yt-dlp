@@ -116,6 +116,13 @@ void postProcess::createNfo(fs::path path, nfoInfo_t nfo, bool episode) {
         root->InsertEndChild(displayorderElement);
     }
 
+    // season always 1
+    if(episode) {
+        tinyxml2::XMLElement* displayorderElement = doc.NewElement("season");
+        displayorderElement->SetText(1);
+        root->InsertEndChild(displayorderElement);
+    }
+
     // save it 
     fs::path dest;
     if(episode) {
