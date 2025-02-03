@@ -43,7 +43,7 @@ void downloader::start() {
         } else {
             tempPath = string(conf["tempPath"]) + DEFAULT_VIDEO_PATH_PATTERN(this->customFolder); 
         }
-        tempOutFile =  tempPath + DEFAULT_VIDEO_FILE_NAME;
+        tempOutFile =  tempPath + DEFAULT_VIDEO_FILE_NAME(this->getDownloadedCount() + 1);
     } else if (setting.mediaType == "music") { // single music file
         cout << "==" << endl;
         if(this->customFolder.empty()) {
@@ -135,6 +135,12 @@ void downloader::start() {
         downloadCommand += " --replace-in-metadata \"artist\" \"\\d+\" \"" + setting.artist +"\"";
         downloadCommand += " --add-metadata --embed-chapters";
         downloadCommand += " -f \"bestaudio[ext=m4a]/bestaudio[ext=aac]/bestaudio[ext=mp3]\" -o \"" + tempOutFile + "\"";
+    }
+
+    // inject the number in the queue into the video for ordering
+    if(setting.mediaType == "video") {
+        downloadCommand += " --parse-metadata \"like_count:%(episode)s\""; // hacky workaround to get it to replace stuff
+        downloadCommand += " --replace-in-metadata \"episode\" \"\\d+\" \"" + to_string(this->getDownloadedCount() + 1) +"\"";
     }
 
     if(this->setting.reverse == true) {
