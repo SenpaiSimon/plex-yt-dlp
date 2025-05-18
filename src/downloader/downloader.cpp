@@ -126,7 +126,7 @@ void downloader::start() {
         downloadCommand += " --parse-metadata \"playlist_autonumber:%(artist)s\""; // hacky workaround to get it to replace stuff
         downloadCommand += " --replace-in-metadata \"artist\" \"\\d+\" \"" + setting.artist +"\"";
         downloadCommand += " --add-metadata --embed-chapters";
-        downloadCommand += " -f bestaudio -o \"" + tempOutFile + "\"";
+        downloadCommand += " -f \"bestaudio[ext=m4a]/bestaudio[ext=aac]/bestaudio[ext=mp3]\" -o \"" + tempOutFile + "\"";
     } else if (setting.mediaType == "rss") {
         downloadCommand += " --embed-thumbnail --embed-metadata";
         downloadCommand += " --parse-metadata \"playlist_autonumber:%(track_number)s\"";
@@ -192,26 +192,26 @@ void downloader::start() {
             }
         }
 
-        // cout << line;
+        cout << line;
 
-        // act on certain strings in the output of the command
-        if(line.find("[download]") != std::string::npos) {
-            if(line.find("\% of") != std::string::npos) {
-                cout << "== " << colors::cyan(line);
-            } else {
-                if(line.find("Downloading item") != std::string::npos) {
-                    cout << "==" << endl;
-                    cout << "==" << endl;
-                    cout << "== " << colors::boldGreen(line);
-                } else {
-                    cout << "== " << line;
-                }
-            }
-        }
+        // // act on certain strings in the output of the command
+        // if(line.find("[download]") != std::string::npos) {
+        //     if(line.find("\% of") != std::string::npos) {
+        //         cout << "== " << colors::cyan(line);
+        //     } else {
+        //         if(line.find("Downloading item") != std::string::npos) {
+        //             cout << "==" << endl;
+        //             cout << "==" << endl;
+        //             cout << "== " << colors::boldGreen(line);
+        //         } else {
+        //             cout << "== " << line;
+        //         }
+        //     }
+        // }
 
-        if(line.find("[Exec]") != std::string::npos) {
-            cout << "== " << line;
-        }
+        // if(line.find("[Exec]") != std::string::npos) {
+        //     cout << "== " << line;
+        // }
 
         line.clear();
     }
