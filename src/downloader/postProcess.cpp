@@ -23,6 +23,7 @@ void postProcess::convert() {
         if(entry.path().extension() == ".json") {
             if(this->isPlaylistMeta(entry.path())) {
                 playlistInfo = entry.path();
+                cout << "== " << "Playlist Info: " << entry.path() << endl;
             } else {
                 infoJson.push_back(entry.path());
             }
@@ -37,6 +38,25 @@ void postProcess::convert() {
                 images.push_back(entry.path());
             }
         }
+    }
+
+    // sort infoJson by name
+    std::sort(infoJson.begin(), infoJson.end(), [](const fs::path& a, const fs::path& b) {
+        auto getNumber = [](const fs::path& p) -> int {
+            std::string name = p.filename().string();
+            size_t pos = name.find(" - ");
+            if (pos != std::string::npos) {
+                try {
+                    return std::stoi(name.substr(0, pos));
+                } catch (...) {}
+            }
+            return 0;
+        };
+        return getNumber(a) < getNumber(b);
+    });
+
+    for(const auto& path : infoJson) {
+        cout << "== " << "Episode Info: " << path << endl;
     }
 
     // must be first
