@@ -40,5 +40,7 @@ class settings
 
         bool jellyfin;
         string playlistPath;
+
+        bool debug;
         settings();
 };

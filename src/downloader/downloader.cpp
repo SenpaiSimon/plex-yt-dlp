@@ -192,26 +192,28 @@ void downloader::start() {
             }
         }
 
-        // cout << line;
-
-        // act on certain strings in the output of the command
-        if(line.find("[download]") != std::string::npos) {
-            if(line.find("\% of") != std::string::npos) {
-                cout << "== " << colors::cyan(line);
-            } else {
-                if(line.find("Downloading item") != std::string::npos) {
-                    cout << "==" << endl;
-                    cout << "==" << endl;
-                    cout << "== " << colors::boldGreen(line);
+        if(setting.debug) {
+            cout << line;
+        } else {
+            // act on certain strings in the output of the command
+            if(line.find("[download]") != std::string::npos) {
+                if(line.find("\% of") != std::string::npos) {
+                    cout << "== " << colors::cyan(line);
                 } else {
-                    cout << "== " << line;
+                    if(line.find("Downloading item") != std::string::npos) {
+                        cout << "==" << endl;
+                        cout << "==" << endl;
+                        cout << "== " << colors::boldGreen(line);
+                    } else {
+                        cout << "== " << line;
+                    }
                 }
             }
-        }
 
-        // if(line.find("[Exec]") != std::string::npos) {
-        //     cout << "== " << line;
-        // }
+            if(line.find("[Exec]") != std::string::npos) {
+                cout << "== " << line;
+            }
+        }
 
         line.clear();
     }

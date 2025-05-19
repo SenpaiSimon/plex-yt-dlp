@@ -75,6 +75,11 @@ settings argumentParser::parse() {
             i++;
             continue;
         }
+
+        if(string(this->argValues[i]) == "--debug" || string(this->argValues[i]) == "-d") {
+            this->setting.debug = true;
+            continue;
+        }
         
         tools::printLine();
         cout << "==" << endl;
