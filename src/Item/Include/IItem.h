@@ -2,6 +2,7 @@
 
 #include <string>
 
+namespace Items {
 class IItem {
 public:
   virtual ~IItem() = default;
@@ -10,3 +11,4 @@ public:
   virtual void Process() = 0;
   virtual void PostProcess() = 0;
 };
+}; // namespace Items
