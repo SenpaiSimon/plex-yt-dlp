@@ -1,6 +1,21 @@
 cmake_minimum_required(VERSION 3.30.0)
 project(yt-dlp-wrapper VERSION 0.1.0 LANGUAGES C CXX)
 
+# get googletest
+# cmake_policy(SET CMP0135 NEW)
+# include(FetchContent)
+
+# FetchContent_Declare(
+#     googletest
+#     URL https://github.com/google/googletest/releases/download/v1.17.0/googletest-1.17.0.tar.gz
+#     SYSTEM
+# )
+
+# # Forcing GTest to use the same runtime as your project (important for Windows)
+# set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+
+# FetchContent_MakeAvailable(googletest)
+
 # lib json
 set(JSON_BuildTests OFF CACHE INTERNAL "")
 ADD_SUBDIRECTORY(lib/json)
@@ -24,6 +39,13 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     nlohmann_json::nlohmann_json 
 )
 
+add_subdirectory(src)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    Thread
+    Logger
+)
+
 # Compiler Flags
 add_compile_options(
     -Wno-deprecated-declarations
@@ -33,7 +55,3 @@ add_compile_options(
     -Wno-maybe-uninitialized
     -O1
 )
-
-set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-include(CPack)
