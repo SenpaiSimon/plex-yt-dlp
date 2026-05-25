@@ -3,7 +3,7 @@
 using namespace Components::Logger;
 
 namespace Items {
-Playlist::Playlist(Components::Logger::ILogger& logger) : mLogger(logger) {};
+Playlist::Playlist(ILogger& logger) : mLogger(logger) {};
 
 void Playlist::PreProcess() { mLogger.Info(Components::Logger::Category::Processing, LogMessage("Pre-processing playlist...")); };
 

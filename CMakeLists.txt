@@ -45,6 +45,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Thread
     Logger
     Item
+    ArgParser
 )
 
 # Compiler Flags

@@ -1,3 +1,4 @@
+#include "ArgParser.h"
 #include "Logger.h"
 #include "Playlist.h"
 #include "Single.h"
@@ -5,12 +6,14 @@
 #include <memory>
 #include <thread>
 
+using Components::ArgParser;
 using Components::Logger::Category;
 using Components::Logger::LogMessage;
 
 int main(int argc, char** argv) {
   std::unique_ptr<Components::Logger::ILogger> logger = std::make_unique<Components::Logger::Logger>();
   std::queue<std::unique_ptr<Items::IItem>> itemQueue;
+  Components::ArgParser argParser(argc, argv, *logger);
 
   itemQueue.push(std::make_unique<Items::Single>(*logger));
   itemQueue.push(std::make_unique<Items::Playlist>(*logger));
