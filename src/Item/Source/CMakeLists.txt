@@ -1,6 +1,6 @@
 set(LIBNAME Item)
 
-add_library(${LIBNAME} STATIC Playlist.cpp)
+add_library(${LIBNAME} STATIC Playlist.cpp Single.cpp)
 
 target_include_directories(${LIBNAME} PUBLIC .)
 
