@@ -15,7 +15,5 @@ int main(int argc, char** argv) {
   playlist.Process();
   playlist.PostProcess();
 
-  std::this_thread::sleep_for(std::chrono::seconds(1)); // Allow logger thread to flush messages before exiting.
-
   return 0;
 }

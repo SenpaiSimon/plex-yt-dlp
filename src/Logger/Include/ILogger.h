@@ -21,9 +21,9 @@ class ILogger {
 public:
   virtual ~ILogger() = default;
   // Accept a pre-formatted message (use `std::format` at call-site).
-  virtual void Info(Category category, const LogMessage&& msg) noexcept = 0;
-  virtual void Warn(Category category, const LogMessage&& msg) noexcept = 0;
-  virtual void Error(Category category, const LogMessage&& msg) noexcept = 0;
-  virtual void Trace(Category category, const LogMessage&& msg) noexcept = 0;
+  virtual void Info(Category category, LogMessage&& msg) noexcept = 0;
+  virtual void Warn(Category category, LogMessage&& msg) noexcept = 0;
+  virtual void Error(Category category, LogMessage&& msg) noexcept = 0;
+  virtual void Trace(Category category, LogMessage&& msg) noexcept = 0;
 };
 } // namespace Components::Logger

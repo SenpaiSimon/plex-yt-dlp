@@ -18,8 +18,8 @@ struct LogMeta {
 };
 
 struct LogEntry {
-  const LogMeta meta;
-  const LogMessage&& msg;
+  LogMeta meta;
+  LogMessage msg;
 };
 
 class LoggerThread : public Thread::Thread {
@@ -32,7 +32,8 @@ public:
   void Receive(LogEntry&& entry) noexcept;
 
 private:
-  void Log(Level level, Category category, const std::string_view msg) noexcept;
+  void Log(Level level, Category category, std::chrono::system_clock::time_point tp, const std::string_view msg) noexcept;
+  void PopLog() noexcept;
   // semaphore for queue
   std::mutex mMutex;
   std::condition_variable cv;
@@ -44,10 +45,10 @@ class Logger : public ILogger {
 public:
   Logger();
 
-  void Info(Category category, const LogMessage&& msg) noexcept final;
-  void Warn(Category category, const LogMessage&& msg) noexcept final;
-  void Error(Category category, const LogMessage&& msg) noexcept final;
-  void Trace(Category category, const LogMessage&& msg) noexcept final;
+  void Info(Category category, LogMessage&& msg) noexcept final;
+  void Warn(Category category, LogMessage&& msg) noexcept final;
+  void Error(Category category, LogMessage&& msg) noexcept final;
+  void Trace(Category category, LogMessage&& msg) noexcept final;
 
 private:
   LoggerThread mLoggerThread;

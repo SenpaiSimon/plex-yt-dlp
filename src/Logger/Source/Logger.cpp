@@ -9,7 +9,7 @@
 using namespace Components::Thread;
 namespace Components::Logger {
 namespace {
-constexpr std::string_view CatergoryConvert(Category category) noexcept {
+constexpr std::string_view CategoryConvert(Category category) noexcept {
   switch (category) {
   case Category::Init:
     return "Init";
@@ -29,7 +29,7 @@ constexpr std::string_view CatergoryConvert(Category category) noexcept {
 constexpr std::size_t LongestCategoryLength() noexcept {
   std::size_t maxLength = 0;
   for (uint8_t i = 0; i < static_cast<uint8_t>(Category::COUNT); ++i) {
-    auto length = CatergoryConvert(static_cast<Category>(i)).size();
+    auto length = CategoryConvert(static_cast<Category>(i)).size();
     if (length > maxLength) {
       maxLength = length;
     }
@@ -75,19 +75,27 @@ LoggerThread::~LoggerThread() {
   Stop();
 }
 
+void LoggerThread::PopLog() noexcept {
+  auto entry = std::move(mQueue.front());
+  mQueue.pop();
+
+  Log(entry.meta.level, entry.meta.category, entry.meta.tp, entry.msg.View());
+}
+
 void LoggerThread::Exec() {
-  while (IsRunning()) {
+  while (true) {
     std::unique_lock lock(mMutex);
+    // Wait until there is a message OR the thread is stopped
     cv.wait(lock, [this]() { return !mQueue.empty() || !IsRunning(); });
 
-    if (mQueue.empty()) {
-      continue;
+    // Exit only if the thread is stopped and no messages are left
+    if (mQueue.empty() && !IsRunning()) {
+      break;
     }
 
-    auto entry = std::move(mQueue.front());
-    mQueue.pop();
-
-    Log(entry.meta.level, entry.meta.category, entry.msg.View());
+    if (!mQueue.empty()) {
+      PopLog();
+    }
   }
 }
 
@@ -99,10 +107,10 @@ void LoggerThread::Receive(LogEntry&& entry) noexcept {
   cv.notify_one();
 }
 
-void LoggerThread::Log(Level level, Category category, const std::string_view msg) noexcept {
-  auto timeStr = FormatTime(mTimeBuffer, std::chrono::system_clock::now());
+void LoggerThread::Log(Level level, Category category, std::chrono::system_clock::time_point tp, const std::string_view msg) noexcept {
+  auto timeStr = FormatTime(mTimeBuffer, tp);
   auto levelStr = LevelConvert(level);
-  auto categoryStr = CatergoryConvert(category);
+  auto categoryStr = CategoryConvert(category);
 
   std::cout << "[" << timeStr << "][" << levelStr << "][" << std::setw(LongestCategoryLength()) << std::left << std::setfill(' ')
             << categoryStr << "] " << msg << std::endl;
@@ -110,22 +118,22 @@ void LoggerThread::Log(Level level, Category category, const std::string_view ms
 
 Logger::Logger() { mLoggerThread.Start(); }
 
-void Logger::Info(Category category, const LogMessage&& msg) noexcept {
+void Logger::Info(Category category, LogMessage&& msg) noexcept {
   mLoggerThread.Receive(
       LogEntry{.meta = LogMeta{.level = Level::Info, .category = category, .tp = std::chrono::system_clock::now()}, .msg = std::move(msg)});
 }
 
-void Logger::Warn(Category category, const LogMessage&& msg) noexcept {
+void Logger::Warn(Category category, LogMessage&& msg) noexcept {
   mLoggerThread.Receive(
       LogEntry{.meta = LogMeta{.level = Level::Warn, .category = category, .tp = std::chrono::system_clock::now()}, .msg = std::move(msg)});
 }
 
-void Logger::Error(Category category, const LogMessage&& msg) noexcept {
+void Logger::Error(Category category, LogMessage&& msg) noexcept {
   mLoggerThread.Receive(LogEntry{.meta = LogMeta{.level = Level::Error, .category = category, .tp = std::chrono::system_clock::now()},
                                  .msg = std::move(msg)});
 }
 
-void Logger::Trace(Category category, const LogMessage&& msg) noexcept {
+void Logger::Trace(Category category, LogMessage&& msg) noexcept {
   mLoggerThread.Receive(LogEntry{.meta = LogMeta{.level = Level::Trace, .category = category, .tp = std::chrono::system_clock::now()},
                                  .msg = std::move(msg)});
 }
